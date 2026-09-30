@@ -31,6 +31,7 @@ pipelines:
             - frontend/dist/**
       - step:
           name: Deploy Frontend to GoDaddy
+          trigger: manual
           deployment: Production-Frontend
           script:
             - pipe: atlassian/ftp-deploy:0.3.7
