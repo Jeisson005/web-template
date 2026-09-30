@@ -1,20 +1,29 @@
 ---
 interface FaqItem {
-  q: string;
-  a: string;
+  q?: string;
+  a?: string;
+  question?: string;
+  answer?: string;
 }
 
 interface Props {
   items: FaqItem[];
   id?: string;
+  title?: string;
+  subtitle?: string;
 }
 
-const { items, id = 'faq' } = Astro.props;
+const { items, id = 'faq', title, subtitle } = Astro.props;
 ---
 
-<div id={id} style="max-width: 900px; margin-top: 44px; border-top: 1px solid rgb(217, 228, 248);">
+<div id={id} style="max-width: 900px; margin-top: 44px; border-top: 1px solid rgb(217, 228, 248); width: 100%;">
+  {title && <h2 style="font-size: 1.875rem; font-weight: 800; text-align: center; margin-bottom: 0.75rem; color: #0A1C4E;">{title}</h2>}
+  {subtitle && <p style="font-size: 1rem; color: #5A6C8C; text-align: center; margin-bottom: 2rem;">{subtitle}</p>}
+
   {
     items.map((item, index) => {
+      const q = item.q || item.question || '';
+      const a = item.a || item.answer || '';
       const isOpen = index === 0;
       return (
         <div style="border-bottom: 1px solid rgb(217, 228, 248);">
@@ -24,7 +33,7 @@ const { items, id = 'faq' } = Astro.props;
             data-faq="btn"
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; min-height: 44px; padding: 24px 0px; background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; font: inherit; text-align: left; cursor: pointer; color: rgb(10, 28, 78);"
           >
-            <span style="font-size: 1.125rem; font-weight: 700;">{item.q}</span>
+            <span style="font-size: 1.125rem; font-weight: 700;">{q}</span>
             <i
               class={`ph ${isOpen ? 'ph-minus' : 'ph-plus'}`}
               style="flex: 0 0 auto; font-size: 20px; color: rgb(19, 73, 216);"
@@ -34,7 +43,7 @@ const { items, id = 'faq' } = Astro.props;
             data-faq="panel"
             style={`padding: 0px 0px 26px; font-size: 1.0625rem; line-height: 1.6; color: rgb(90, 108, 140); max-width: 68ch; display: ${isOpen ? 'block' : 'none'};`}
           >
-            {item.a}
+            {a}
           </div>
         </div>
       );
