@@ -18,7 +18,7 @@ definitions:
 
 pipelines:
   branches:
-    main:
+    prod:
       - step:
           name: Build Frontend (Astro SSG)
           caches:
