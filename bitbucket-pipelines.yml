@@ -7,6 +7,8 @@
 #   - GODADDY_PASSWORD:      Contraseña FTP / cPanel (Marcar como Secured)
 #   - GODADDY_FRONTEND_PATH: Ruta en el hosting para la web estática (ej. /public_html)
 #   - GODADDY_BACKEND_PATH:  (Opcional) Ruta de la app Node en cPanel (ej. /cms)
+#   - GITHUB_TOKEN:          Token de acceso personal de GitHub con permisos de repo (Secured)
+#   - GITHUB_REPO:           Repositorio en GitHub para GoDaddy (ej. Intelligis-Colombia/smartmaps-cms)
 # ==============================================================================
 
 image: node:22-alpine
@@ -42,6 +44,13 @@ pipelines:
                 REMOTE_PATH: $GODADDY_FRONTEND_PATH
                 LOCAL_PATH: 'frontend/dist'
                 DELETE_FLAG: 'true'
+      - step:
+          name: Sync Backend to GitHub (GoDaddy Node App)
+          deployment: Production-CMS
+          script:
+            - apk add --no-cache git
+            - git subtree split --prefix=backend -b backend-release
+            - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO:-Intelligis-Colombia/smartmaps-cms}.git backend-release:main --force
 
   custom:
     deploy-frontend:
@@ -94,3 +103,12 @@ pipelines:
                 SERVER: $GODADDY_HOST
                 REMOTE_PATH: $GODADDY_BACKEND_PATH
                 LOCAL_PATH: 'backend'
+
+    sync-backend-github:
+      - step:
+          name: Sync Backend to GitHub (GoDaddy Node App)
+          deployment: Production-CMS
+          script:
+            - apk add --no-cache git
+            - git subtree split --prefix=backend -b backend-release
+            - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO:-Intelligis-Colombia/smartmaps-cms}.git backend-release:main --force
