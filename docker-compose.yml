@@ -1,0 +1,59 @@
+services:
+  # Capa de Contenido y Datos (CMS Headless con soporte SQLite / Postgres y Storage S3/Local)
+  cms:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: web-template-cms
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+      # Base de datos: SQLite por defecto (o poner postgresql://... para Postgres)
+      - DATABASE_URI=${DATABASE_URI:-file:/app/data/backend.db}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET:-super-secret-payload-key-change-in-prod-12345}
+      - MEDIA_DIR=/app/media
+      # Almacenamiento en nube (descomentar y definir para S3/R2)
+      # - S3_BUCKET=${S3_BUCKET}
+      # - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      # - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      # - S3_REGION=${S3_REGION}
+      # - S3_ENDPOINT=${S3_ENDPOINT}
+      # Hook global de compilación
+      # - BUILD_WEBHOOK_URL=${BUILD_WEBHOOK_URL}
+    volumes:
+      - cms-data:/app/data
+      - cms-media:/app/media
+    networks:
+      - web-template-net
+
+  # Capa de Generación y Renderizado (Frontend Astro SSG)
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: web-template-web
+    restart: unless-stopped
+    ports:
+      - "4321:4321"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=4321
+      - PUBLIC_CMS_URL=http://localhost:3000
+      - CMS_INTERNAL_URL=http://cms:3000
+    depends_on:
+      - cms
+    networks:
+      - web-template-net
+
+networks:
+  web-template-net:
+    driver: bridge
+
+volumes:
+  cms-data:
+    driver: local
+  cms-media:
+    driver: local

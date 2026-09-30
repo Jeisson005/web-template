@@ -1,0 +1,82 @@
+---
+// Static search component powered by Pagefind
+---
+
+<div id="search-modal" class="fixed inset-0 z-50 hidden bg-zinc-950/80 backdrop-blur-sm p-4 sm:p-6 md:p-20 overflow-y-auto">
+  <div class="relative max-w-2xl mx-auto bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl p-6 overflow-hidden">
+    <div class="flex items-center justify-between pb-4 border-b border-zinc-800">
+      <div class="flex items-center gap-2 text-white font-semibold">
+        <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <span>Static Site Search (Pagefind)</span>
+      </div>
+      <button id="close-search" class="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Container where Pagefind renders its UI -->
+    <div id="pagefind-container" class="mt-4 min-h-[160px]">
+      <div class="text-sm text-zinc-400 py-6 text-center space-y-2">
+        <p>Pure static index search with no database or server required.</p>
+        <p class="text-xs text-zinc-500 font-mono">The search index is generated automatically during <code class="bg-zinc-800 px-1 py-0.5 rounded text-emerald-400">npm run build</code>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const trigger = document.getElementById('search-trigger');
+  const modal = document.getElementById('search-modal');
+  const closeBtn = document.getElementById('close-search');
+
+  function openModal() {
+    modal?.classList.remove('hidden');
+    if (typeof window !== 'undefined' && !(window as any).__pagefindLoaded) {
+      const container = document.getElementById('pagefind-container');
+      if (container) {
+        const script = document.createElement('script');
+        script.src = '/pagefind/pagefind-ui.js';
+        script.onload = () => {
+          (window as any).__pagefindLoaded = true;
+          container.innerHTML = '';
+          if ((window as any).PagefindUI) {
+            new (window as any).PagefindUI({
+              element: '#pagefind-container',
+              showSubResults: true,
+              resetStyles: false,
+            });
+          }
+        };
+        script.onerror = () => {
+          console.info('[Pagefind] Static search index is available after running npm run build');
+        };
+        document.head.appendChild(script);
+      }
+    }
+  }
+
+  function closeModal() {
+    modal?.classList.add('hidden');
+  }
+
+  trigger?.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      modal?.classList.contains('hidden') ? openModal() : closeModal();
+    }
+    if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+      closeModal();
+    }
+  });
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+</script>

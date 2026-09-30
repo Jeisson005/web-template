@@ -1,0 +1,25 @@
+---
+import { CMS_ADMIN_URL } from '@/lib/config';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-zinc-800/80 bg-zinc-950/40">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+    <div class="flex items-center gap-2">
+      <span class="font-semibold text-zinc-300">Web Template</span>
+      <span>•</span>
+      <span>Astro SSG + Headless CMS</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <a href="/" class="hover:text-zinc-300 transition-colors">Home</a>
+      <a href="/contact" class="hover:text-zinc-300 transition-colors">Contact</a>
+      <a href={CMS_ADMIN_URL} target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 transition-colors">Admin</a>
+    </div>
+
+    <div>
+      <p>© {currentYear} All rights reserved.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,66 @@
+version: "1.0"
+project:
+  name: "web-template"
+  description: "Minimalist multipurpose static template powered by Astro SSG and Payload CMS 3"
+  repository: "local"
+
+stack:
+  backend:
+    framework: "Payload CMS v3"
+    runtime: "Node.js 22 (Alpine)"
+    database:
+      default: "sqlite"
+      supported:
+        - "sqlite (@payloadcms/db-sqlite)"
+        - "postgres (@payloadcms/db-postgres)"
+        - "mongodb (@payloadcms/db-mongodb)"
+      switch_mechanism: "DATABASE_URI environment variable"
+    storage:
+      default: "local"
+      supported:
+        - "local (Persistent volume at /app/media)"
+        - "s3 / r2 / minio (@payloadcms/storage-s3)"
+        - "ftp (Remote volume mount or upload hook)"
+    port: 3000
+    host_port: 3000
+    admin_route: "/admin"
+    api_route: "/api"
+    features:
+      - "Multi-database support"
+      - "Multi-storage asset handling"
+      - "Global deployment trigger (Deploy Global)"
+      - "Optional i18n localization"
+      - "Strict TypeScript types generation"
+  
+  frontend:
+    framework: "Astro"
+    mode: "static" # SSG
+    runtime: "Node.js 22 (Alpine)"
+    port: 4321
+    host_port: 4321
+    styling: "Tailwind CSS v4"
+    search_engine: "Pagefind"
+    sitemap: "@astrojs/sitemap"
+    features:
+      - "0 KB client-side JS baseline"
+      - "Optional i18n routing without mandatory default prefix"
+      - "astro:assets automatic image compression at build time"
+      - "Native HTML forms posting to Payload endpoints"
+      - "Lexical HTML renderer integration"
+
+docker:
+  compose_file: "docker-compose.yml"
+  services:
+    cms:
+      container_name: "web-template-cms"
+      ports:
+        - "3000:3000"
+    web:
+      container_name: "web-template-web"
+      ports:
+        - "4321:4321"
+
+technical_docs:
+  standards_dir: "specs"
+  agents_manifest: "AGENTS.md"
+  project_spec: "project.md"

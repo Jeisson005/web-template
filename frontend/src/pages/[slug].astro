@@ -1,0 +1,96 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import RichText from '@/components/RichText.astro';
+import { getPages } from '@/lib/payload';
+import type { Page } from '@/lib/payload-types';
+
+export async function getStaticPaths() {
+  try {
+    const pages = await getPages();
+    if (!pages || pages.length === 0) {
+      // Return a demo sample path if CMS is fresh and empty
+      return [
+        {
+          params: { slug: 'sample' },
+          props: {
+            page: {
+              id: 'demo',
+              title: 'Sample Page',
+              slug: 'sample',
+              hero: {
+                heading: 'This is a sample page fetched from Payload CMS',
+                subheading: 'Demonstration of Astro static site generation consuming typed Payload data.',
+                badge: 'Demo',
+              },
+              content: null,
+              seo: {
+                metaTitle: 'Sample Page - Web Template',
+                metaDescription: 'Static test page rendered with Astro and Payload CMS',
+              },
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            } as unknown as Page,
+          },
+        },
+      ];
+    }
+
+    return pages.map((page) => ({
+      params: { slug: page.slug },
+      props: { page },
+    }));
+  } catch (error) {
+    return [];
+  }
+}
+
+interface Props {
+  page: Page;
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout
+  title={page?.seo?.metaTitle || `${page?.title} | Web Template`}
+  description={page?.seo?.metaDescription || page?.hero?.subheading || undefined}
+>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Header / Hero -->
+    <header class="mb-12 text-center pb-8 border-b border-zinc-800">
+      {page?.hero?.badge && (
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-wider mb-4">
+          {page.hero.badge}
+        </span>
+      )}
+      <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+        {page?.hero?.heading || page?.title}
+      </h1>
+      {page?.hero?.subheading && (
+        <p class="mt-4 text-lg text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+          {page.hero.subheading}
+        </p>
+      )}
+    </header>
+
+    <!-- Lexical Rich Text Content -->
+    {page?.content && (
+      <div class="glass-panel p-8 sm:p-12 rounded-3xl">
+        <RichText content={page.content} />
+      </div>
+    )}
+
+    <!-- Back to Home -->
+    <div class="mt-12 text-center">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-emerald-400 transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Back to home</span>
+      </a>
+    </div>
+  </article>
+</BaseLayout>

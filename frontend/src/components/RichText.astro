@@ -1,0 +1,15 @@
+---
+import { lexicalToHtml } from '../lib/lexicalToHtml';
+
+interface Props {
+  content: any;
+  class?: string;
+}
+
+const { content, class: className = '' } = Astro.props;
+const html = lexicalToHtml(content);
+---
+
+{html ? (
+  <div class:list={["prose prose-invert max-w-none", className]} set:html={html} />
+) : null}
