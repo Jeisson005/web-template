@@ -20,6 +20,8 @@ tmp/
 dist/
 .astro/
 out/
+next-env.d.ts
+*.tsbuildinfo
 
 # SQLite databases & journals
 *.db
