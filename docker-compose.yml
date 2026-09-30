@@ -45,6 +45,10 @@ services:
       - CMS_INTERNAL_URL=http://cms:3000
     depends_on:
       - cms
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/astro.config.mjs:/app/astro.config.mjs
     networks:
       - web-template-net
 

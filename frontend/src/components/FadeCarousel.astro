@@ -1,0 +1,14 @@
+---
+interface Props {
+  altPrefix?: string;
+}
+
+const { altPrefix = 'Participación en Evento ESRI' } = Astro.props;
+---
+
+<div class="fade-carousel">
+  <img src="https://i.postimg.cc/4xZNR2Rv/team-esri-2.jpg" alt={`${altPrefix} 1`} />
+  <img src="https://i.postimg.cc/2Sm8N9N7/team-esri-3.jpg" alt={`${altPrefix} 2`} />
+  <img src="https://i.postimg.cc/mgR2WpWS/team-esri-4.jpg" alt={`${altPrefix} 3`} />
+  <img src="https://i.postimg.cc/jSKdY3YQ/tema-esri-1.jpg" alt={`${altPrefix} 4`} />
+</div>

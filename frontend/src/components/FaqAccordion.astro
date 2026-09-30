@@ -1,0 +1,58 @@
+---
+interface FaqItem {
+  q: string;
+  a: string;
+}
+
+interface Props {
+  items: FaqItem[];
+  id?: string;
+}
+
+const { items, id = 'faq' } = Astro.props;
+---
+
+<div id={id} style="max-width: 900px; margin-top: 44px; border-top: 1px solid rgb(217, 228, 248);">
+  {
+    items.map((item, index) => {
+      const isOpen = index === 0;
+      return (
+        <div style="border-bottom: 1px solid rgb(217, 228, 248);">
+          <button
+            type="button"
+            aria-expanded={isOpen ? 'true' : 'false'}
+            data-faq="btn"
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; width: 100%; min-height: 44px; padding: 24px 0px; background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; font: inherit; text-align: left; cursor: pointer; color: rgb(10, 28, 78);"
+          >
+            <span style="font-size: 1.125rem; font-weight: 700;">{item.q}</span>
+            <i
+              class={`ph ${isOpen ? 'ph-minus' : 'ph-plus'}`}
+              style="flex: 0 0 auto; font-size: 20px; color: rgb(19, 73, 216);"
+            />
+          </button>
+          <div
+            data-faq="panel"
+            style={`padding: 0px 0px 26px; font-size: 1.0625rem; line-height: 1.6; color: rgb(90, 108, 140); max-width: 68ch; display: ${isOpen ? 'block' : 'none'};`}
+          >
+            {item.a}
+          </div>
+        </div>
+      );
+    })
+  }
+</div>
+
+<script>
+  document.querySelectorAll('[data-faq=btn]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const panel = btn.parentElement?.querySelector('[data-faq=panel]') as HTMLElement;
+      const icon = btn.querySelector('i');
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+      const nextState = !isExpanded;
+
+      btn.setAttribute('aria-expanded', nextState ? 'true' : 'false');
+      if (panel) panel.style.display = nextState ? 'block' : 'none';
+      if (icon) icon.className = nextState ? 'ph ph-minus' : 'ph ph-plus';
+    });
+  });
+</script>

@@ -1,0 +1,144 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+  currentPath?: string;
+  ctaText?: string;
+  ctaHref?: string;
+}
+
+const {
+  lang = 'es',
+  currentPath = Astro.url.pathname,
+  ctaText = lang === 'es' ? 'Solicita una muestra' : 'Request a sample',
+  ctaHref = '#contacto',
+} = Astro.props;
+
+const isEs = lang === 'es';
+
+// Language switch URLs
+let esUrl = '/';
+let enUrl = '/en';
+
+if (currentPath.includes('/data')) {
+  esUrl = '/data';
+  enUrl = '/en/data';
+} else if (currentPath.includes('/professional-services') || currentPath.includes('/servicios-profesionales')) {
+  esUrl = '/professional-services';
+  enUrl = '/en/professional-services';
+} else if (currentPath.includes('/soluciones-a-la-medida') || currentPath.includes('/custom-solutions')) {
+  esUrl = '/soluciones-a-la-medida';
+  enUrl = '/en/soluciones-a-la-medida';
+} else if (currentPath.includes('/casos-de-uso') || currentPath.includes('/use-cases')) {
+  esUrl = '/casos-de-uso';
+  enUrl = '/en/casos-de-uso';
+}
+
+const homeUrl = isEs ? '/inicio' : '/en';
+const dataUrl = isEs ? '/data' : '/en/data';
+const psUrl = isEs ? '/professional-services' : '/en/professional-services';
+const customUrl = isEs ? '/soluciones-a-la-medida' : '/en/soluciones-a-la-medida';
+const useCasesUrl = isEs ? '/casos-de-uso' : '/en/casos-de-uso';
+
+const isDataActive = currentPath === dataUrl || currentPath === '/data' || currentPath === '/en/data';
+const isPsActive = currentPath === psUrl || currentPath === '/professional-services' || currentPath === '/en/professional-services';
+const isCustomActive = currentPath === customUrl || currentPath === '/soluciones-a-la-medida' || currentPath === '/en/soluciones-a-la-medida';
+const isUseCasesActive = currentPath === useCasesUrl || currentPath === '/casos-de-uso' || currentPath === '/en/casos-de-uso';
+---
+
+<nav
+  style="position: sticky; top: 0px; z-index: 40; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); border-bottom: 1px solid rgb(227, 234, 246);"
+>
+  <div
+    style="max-width: 1280px; margin: 0px auto; padding: 10px 40px; min-height: 72px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px;"
+  >
+    <a href={homeUrl} style="display: flex; align-items: center;" aria-label="smartmaps home">
+      <img
+        src="https://i.postimg.cc/SQ8pgYc1/logo-SM-claro-transparente.png"
+        alt="smartmaps"
+        style="height: 54px; width: auto; display: block;"
+      />
+    </a>
+
+    <div
+      data-navrow="true"
+      style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px 8px; font-size: 15px; font-weight: 500;"
+    >
+      <!-- Dropdown Servicios -->
+      <div class="nav-dropdown-container">
+        <button
+          type="button"
+          aria-haspopup="true"
+          style="display: flex; align-items: center; gap: 6px; background: none; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; font: inherit; color: rgb(61, 84, 128); cursor: pointer; padding: 10px 14px; border-radius: 9999px; min-height: 44px; font-weight: 600;"
+        >
+          {isEs ? 'Servicios' : 'Services'} <i class="ph ph-caret-down" style="font-size: 14px;"></i>
+        </button>
+        <div class="nav-dropdown-menu">
+          <a
+            href={dataUrl}
+            style={isDataActive ? 'color: rgb(19, 73, 216); background-color: rgb(242, 246, 254);' : ''}
+          >
+            {isEs ? 'smartmaps Data' : 'smartmaps Data'}
+          </a>
+          <a
+            href={psUrl}
+            style={isPsActive ? 'color: rgb(19, 73, 216); background-color: rgb(242, 246, 254);' : ''}
+          >
+            {isEs ? 'smartmaps Servicios Profesionales' : 'smartmaps Professional Services'}
+          </a>
+          <a
+            href={customUrl}
+            style={isCustomActive ? 'color: rgb(19, 73, 216); background-color: rgb(242, 246, 254);' : ''}
+          >
+            {isEs ? 'smartmaps Soluciones a la medida' : 'smartmaps Custom Solutions'}
+          </a>
+        </div>
+      </div>
+
+      <a
+        href={useCasesUrl}
+        style={
+          isUseCasesActive
+            ? 'color: rgb(19, 73, 216); padding: 10px 14px; border-radius: 9999px; min-height: 44px; display: flex; align-items: center; background: rgb(242, 246, 254); font-weight: 600;'
+            : 'color: rgb(61, 84, 128); padding: 10px 14px; border-radius: 9999px; min-height: 44px; display: flex; align-items: center; font-weight: 600;'
+        }
+      >
+        {isEs ? 'Casos de uso' : 'Use cases'}
+      </a>
+
+      <a
+        href={ctaHref}
+        data-cta="true"
+        style="margin-left: 12px; display: inline-flex; align-items: center; white-space: nowrap; height: 48px; padding: 0px 24px; border-radius: 9999px; background: rgb(19, 73, 216); color: rgb(255, 255, 255); font-weight: 600; box-shadow: 0 4px 12px rgba(19, 73, 216, 0.2);"
+      >
+        {ctaText}
+      </a>
+
+      <!-- Selector de Idioma -->
+      <div class="nav-dropdown-container" style="margin-left: 8px;">
+        <button
+          type="button"
+          aria-haspopup="true"
+          style="display: flex; align-items: center; gap: 6px; background: none; border: none; font: inherit; color: rgb(61, 84, 128); cursor: pointer; padding: 10px 12px; border-radius: 9999px; min-height: 44px; font-weight: 600;"
+        >
+          {isEs ? 'ES' : 'EN'} <i class="ph ph-caret-down" style="font-size: 14px;"></i>
+        </button>
+        <div class="lang-dropdown-menu">
+          <a
+            href={esUrl}
+            class={isEs ? 'active' : ''}
+            style={isEs ? 'border-bottom: 1px solid rgb(227, 234, 246); color: rgb(19, 73, 216); background-color: rgb(242, 246, 254);' : 'border-bottom: 1px solid rgb(227, 234, 246);'}
+          >
+            ES
+          </a>
+          <a
+            href={enUrl}
+            class={!isEs ? 'active' : ''}
+            style={!isEs ? 'color: rgb(19, 73, 216); background-color: rgb(242, 246, 254);' : ''}
+          >
+            EN
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

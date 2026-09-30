@@ -1,0 +1,217 @@
+---
+interface Props {
+  lang?: 'es' | 'en';
+  theme?: 'dark' | 'light';
+  id?: string;
+}
+
+const { lang = 'es', theme = 'dark', id = 'sm' } = Astro.props;
+const isEs = lang === 'es';
+const isDark = theme === 'dark';
+
+const items = isEs
+  ? [
+      {
+        icon: 'ph-airplane-tilt',
+        title: 'Turismo, hotelería y destinos',
+        desc: 'Hoteles, aerolíneas, operadores turísticos, asociaciones empresariales, oficinas de turismo y gestores de destinos.',
+      },
+      {
+        icon: 'ph-car-profile',
+        title: 'Movilidad, transporte y logística',
+        desc: 'Operadores de transporte, concesionarios, empresas logísticas, estacionamientos y gestores de infraestructura.',
+      },
+      {
+        icon: 'ph-megaphone',
+        title: 'Publicidad, medios y marketing',
+        desc: 'Agencias, centrales de medios, compañías de publicidad exterior y plataformas de marketing.',
+      },
+      {
+        icon: 'ph-bank',
+        title: 'Administraciones públicas y ciudades',
+        desc: 'Ayuntamientos, gobernaciones, ministerios, institutos de estadística, autoridades de movilidad, turismo y planificación.',
+      },
+      {
+        icon: 'ph-storefront',
+        title: 'Retail, franquicias y cadenas',
+        desc: 'Supermercados, restaurantes, cafeterías, gimnasios, ópticas, farmacias, clínicas, tiendas especializadas y centros educativos.',
+      },
+      {
+        icon: 'ph-package',
+        title: 'Consumo masivo y distribución',
+        desc: 'Fabricantes, distribuidores de alimentos y bebidas, mayoristas y empresas con fuerza comercial.',
+      },
+      {
+        icon: 'ph-credit-card',
+        title: 'Banca, seguros y Fintech',
+        desc: 'Bancos, aseguradoras, entidades crediticias, medios de pago y empresas de servicios financieros.',
+      },
+      {
+        icon: 'ph-lightning',
+        title: 'Telecomunicaciones y energía',
+        desc: 'Operadores de telecomunicaciones, comercializadoras de electricidad y gas, empresas de agua, y energías renovables.',
+      },
+      {
+        icon: 'ph-buildings',
+        title: 'Real estate y construcción',
+        desc: 'Promotores, fondos inmobiliarios, constructoras, inmobiliarias, centros comerciales y compañías de valoración.',
+      },
+    ]
+  : [
+      {
+        icon: 'ph-airplane-tilt',
+        title: 'Tourism, Hospitality & Destinations',
+        desc: 'Hotels, airlines, tour operators, business associations, tourism boards, and destination managers.',
+      },
+      {
+        icon: 'ph-car-profile',
+        title: 'Mobility, Transportation & Logistics',
+        desc: 'Transport operators, concessionaires, logistics companies, parking operators, and infrastructure managers.',
+      },
+      {
+        icon: 'ph-megaphone',
+        title: 'Advertising, Media & Marketing',
+        desc: 'Agencies, media buyers, out-of-home advertising companies, and marketing platforms.',
+      },
+      {
+        icon: 'ph-bank',
+        title: 'Public Administration & Cities',
+        desc: 'City councils, regional governments, ministries, statistical institutes, mobility, tourism, and planning authorities.',
+      },
+      {
+        icon: 'ph-storefront',
+        title: 'Retail, Franchises & Chains',
+        desc: 'Supermarkets, restaurants, coffee shops, gyms, opticians, pharmacies, clinics, specialty stores, and educational centers.',
+      },
+      {
+        icon: 'ph-package',
+        title: 'Consumer Goods & Distribution',
+        desc: 'Manufacturers, food and beverage distributors, wholesalers, and field sales organizations.',
+      },
+      {
+        icon: 'ph-credit-card',
+        title: 'Banking, Insurance & Fintech',
+        desc: 'Banks, insurers, credit institutions, payment processors, and financial service firms.',
+      },
+      {
+        icon: 'ph-lightning',
+        title: 'Telecommunications & Energy',
+        desc: 'Telecom operators, electricity and gas retailers, water utilities, and renewable energy providers.',
+      },
+      {
+        icon: 'ph-buildings',
+        title: 'Real Estate & Construction',
+        desc: 'Developers, real estate funds, construction firms, brokerages, shopping centers, and appraisal firms.',
+      },
+    ];
+
+const cardStyle = isDark
+  ? 'border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 26px; box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; background: rgb(10, 23, 51); color: rgb(234, 240, 251);'
+  : 'border: 1px solid rgba(10, 23, 51, 0.08); border-radius: 16px; padding: 26px; box-shadow: rgba(6, 13, 34, 0.04) 0px 1px 2px; background: #fff; color: rgb(10, 28, 78);';
+
+const iconColor = isDark ? 'rgb(74, 155, 255)' : 'rgb(19, 73, 216)';
+const titleColor = isDark ? '#ffffff' : '#0A1C4E';
+const descColor = isDark ? 'rgb(174, 195, 238)' : 'rgb(90, 108, 140)';
+---
+
+<div style="position: relative; margin-top: 56px;" data-carousel-container={id}>
+  <button
+    type="button"
+    id={`${id}-prev`}
+    aria-label="Previous slide"
+    style="position: absolute; top: 50%; left: -22px; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 1px solid rgb(227, 234, 246); box-shadow: 0 4px 12px rgba(0,0,0,0.06); z-index: 10; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #1349D8; transition: background 0.2s;"
+  >
+    <i class="ph ph-caret-left" style="font-size: 20px;"></i>
+  </button>
+  <button
+    type="button"
+    id={`${id}-next`}
+    aria-label="Next slide"
+    style="position: absolute; top: 50%; right: -22px; transform: translateY(-50%); width: 44px; height: 44px; border-radius: 50%; background: #ffffff; border: 1px solid rgb(227, 234, 246); box-shadow: 0 4px 12px rgba(0,0,0,0.06); z-index: 10; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #1349D8; transition: background 0.2s;"
+  >
+    <i class="ph ph-caret-right" style="font-size: 20px;"></i>
+  </button>
+
+  <div style="overflow: hidden; padding: 10px 0;">
+    <div
+      id={`${id}-carousel`}
+      style="display: flex; gap: 20px; transition: transform 0.4s ease-in-out; will-change: transform;"
+    >
+      {
+        items.map((item) => (
+          <div class="sm-card" style={cardStyle}>
+            <i class={`ph ${item.icon}`} style={`font-size: 26px; color: ${iconColor};`} />
+            <div style={`font-size: 17px; font-weight: 700; margin-top: 14px; color: ${titleColor};`}>
+              {item.title}
+            </div>
+            <div style={`font-size: 1.0625rem; line-height: 1.6; color: ${descColor}; margin-top: 8px;`}>
+              {item.desc}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ id }}>
+  (function () {
+    var track = document.getElementById(id + '-carousel');
+    var prev = document.getElementById(id + '-prev');
+    var next = document.getElementById(id + '-next');
+    if (!track || !prev || !next) return;
+    var index = 0;
+    var cards = track.children;
+    var total = cards.length;
+    var interval;
+
+    function getVisible() {
+      if (window.innerWidth <= 600) return 1;
+      if (window.innerWidth <= 1024) return 2;
+      return 4;
+    }
+
+    function update() {
+      var visible = getVisible();
+      var max = total - visible;
+      if (index > max) index = 0;
+      if (index < 0) index = max;
+      var cardW = cards[0] ? cards[0].offsetWidth : 280;
+      var move = index * (cardW + 20);
+      track.style.transform = 'translateX(-' + move + 'px)';
+    }
+
+    function goNext() {
+      var visible = getVisible();
+      if (index >= total - visible) index = 0;
+      else index++;
+      update();
+    }
+
+    function goPrev() {
+      var visible = getVisible();
+      if (index <= 0) index = total - visible;
+      else index--;
+      update();
+    }
+
+    function start() {
+      interval = setInterval(goNext, 3500);
+    }
+    function reset() {
+      clearInterval(interval);
+      start();
+    }
+
+    next.addEventListener('click', function () {
+      goNext();
+      reset();
+    });
+    prev.addEventListener('click', function () {
+      goPrev();
+      reset();
+    });
+    window.addEventListener('resize', update);
+    start();
+  })();
+</script>

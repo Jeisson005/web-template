@@ -1,25 +1,117 @@
 ---
-import { CMS_ADMIN_URL } from '@/lib/config';
+interface Props {
+  lang?: 'es' | 'en';
+}
 
-const currentYear = new Date().getFullYear();
+const { lang = 'es' } = Astro.props;
+const isEs = lang === 'es';
+
+const homeUrl = isEs ? '/inicio' : '/en';
+const dataUrl = isEs ? '/data' : '/en/data';
+const psUrl = isEs ? '/professional-services' : '/en/professional-services';
+const customUrl = isEs ? '/soluciones-a-la-medida' : '/en/soluciones-a-la-medida';
+const useCasesUrl = isEs ? '/casos-de-uso' : '/en/casos-de-uso';
+const contactHref = '#contacto';
 ---
 
-<footer class="mt-auto border-t border-zinc-800/80 bg-zinc-950/40">
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
-    <div class="flex items-center gap-2">
-      <span class="font-semibold text-zinc-300">Web Template</span>
-      <span>•</span>
-      <span>Astro SSG + Headless CMS</span>
+<footer
+  style="background: rgb(5, 14, 43); color: rgb(147, 170, 207); border-top: 1px solid rgb(20, 38, 84); padding: 72px 0px 0px;"
+>
+  <div style="max-width: 1280px; margin: 0px auto; padding: 0px 40px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px;">
+      <div>
+        <div style="display: flex; align-items: center;">
+          <a href={homeUrl} aria-label="smartmaps home">
+            <img
+              src="https://i.postimg.cc/zD2BjZNr/Smartmaps-azul-transparente.png"
+              alt="smartmaps"
+              style="height: 65px; width: auto; display: block;"
+            />
+          </a>
+        </div>
+        <div style="font-size: 13.5px; margin-top: 12px; color: rgb(111, 178, 255);">
+          {isEs ? 'es un producto de Intelligis Technologies' : 'is a product of Intelligis Technologies'}
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; margin-top: 14px; max-width: 34ch;">
+          {
+            isEs
+              ? 'Datos territoriales validados en campo y capacidad GIS certificada para decisiones de expansión, riesgo y cobertura.'
+              : 'Field-validated territorial data and certified GIS capabilities for expansion, risk, and coverage decisions.'
+          }
+        </div>
+      </div>
+
+      <div>
+        <div
+          style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(234, 240, 251);"
+        >
+          {isEs ? 'Soluciones' : 'Solutions'}
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 11px; margin-top: 16px; font-size: 14.5px;">
+          <a href={dataUrl} style="color: rgb(147, 170, 207);">
+            {isEs ? 'smartmaps Data' : 'smartmaps Data'}
+          </a>
+          <a href={psUrl} style="color: rgb(147, 170, 207);">
+            {isEs ? 'smartmaps Servicios Profesionales' : 'smartmaps Professional Services'}
+          </a>
+          <a href={customUrl} style="color: rgb(147, 170, 207);">
+            {isEs ? 'smartmaps Soluciones a la medida' : 'smartmaps Custom Solutions'}
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div
+          style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(234, 240, 251);"
+        >
+          {isEs ? 'Sitio' : 'Site'}
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 11px; margin-top: 16px; font-size: 14.5px;">
+          <a href={useCasesUrl} style="color: rgb(147, 170, 207);">
+            {isEs ? 'Casos de uso' : 'Use cases'}
+          </a>
+          <a href={contactHref} style="color: rgb(147, 170, 207);">
+            {isEs ? 'Contacto' : 'Contact'}
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div
+          style="font-size: 0.75rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(234, 240, 251);"
+        >
+          {isEs ? 'Contacto' : 'Contact'}
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 11px; margin-top: 16px; font-size: 14.5px;">
+          <a href="mailto:info@intelligisgroup.com" style="color: rgb(147, 170, 207);">
+            info@intelligisgroup.com
+          </a>
+          <a href="tel:+50235971516" style="color: rgb(147, 170, 207);">
+            +502 3597 1516
+          </a>
+          <a
+            href="https://www.intelligisgroup.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: rgb(147, 170, 207);"
+          >
+            www.intelligisgroup.com
+          </a>
+          <span style="color: rgb(147, 170, 207);">@intelligisgroup</span>
+        </div>
+      </div>
     </div>
 
-    <div class="flex items-center gap-4">
-      <a href="/" class="hover:text-zinc-300 transition-colors">Home</a>
-      <a href="/contact" class="hover:text-zinc-300 transition-colors">Contact</a>
-      <a href={CMS_ADMIN_URL} target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 transition-colors">Admin</a>
-    </div>
-
-    <div>
-      <p>© {currentYear} All rights reserved.</p>
+    <div
+      style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid rgb(20, 38, 84); margin-top: 56px; padding: 22px 0px; font-size: 13.5px;"
+    >
+      <div>© 2026 Intelligis Technologies</div>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 20px;">
+        <a href="#" style="color: rgb(147, 170, 207);">{isEs ? 'Privacidad' : 'Privacy'}</a>
+        <a href="#" style="color: rgb(147, 170, 207);">{isEs ? 'Cookies' : 'Cookies'}</a>
+        <a href="#" style="color: rgb(147, 170, 207);">{isEs ? 'Términos' : 'Terms'}</a>
+        <span style="color: rgb(111, 178, 255); font-weight: 600;">{isEs ? 'ES' : 'EN'}</span>
+      </div>
     </div>
   </div>
 </footer>
