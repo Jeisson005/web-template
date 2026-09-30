@@ -1,0 +1,95 @@
+# ==============================================================================
+# Bitbucket Pipelines - CI/CD for GoDaddy Deployment
+# ==============================================================================
+# Variables requeridas en Bitbucket (Repository Settings -> Repository Variables):
+#   - GODADDY_HOST:          Host/IP del servidor (ej. ftp.midominio.com)
+#   - GODADDY_USER:          Usuario FTP / cPanel
+#   - GODADDY_PASSWORD:      Contraseña FTP / cPanel (Marcar como Secured)
+#   - GODADDY_FRONTEND_PATH: Ruta en el hosting para la web estática (ej. /public_html)
+#   - GODADDY_BACKEND_PATH:  (Opcional) Ruta de la app Node en cPanel (ej. /cms)
+# ==============================================================================
+
+image: node:22-alpine
+
+definitions:
+  caches:
+    npm-frontend: frontend/node_modules
+    npm-backend: backend/node_modules
+
+pipelines:
+  branches:
+    main:
+      - step:
+          name: Build Frontend (Astro SSG)
+          caches:
+            - npm-frontend
+          script:
+            - cd frontend
+            - npm ci
+            - npm run build
+          artifacts:
+            - frontend/dist/**
+      - step:
+          name: Deploy Frontend to GoDaddy
+          deployment: Production-Frontend
+          script:
+            - pipe: atlassian/ftp-deploy:0.3.7
+              variables:
+                USER: $GODADDY_USER
+                PASSWORD: $GODADDY_PASSWORD
+                SERVER: $GODADDY_HOST
+                REMOTE_PATH: $GODADDY_FRONTEND_PATH
+                LOCAL_PATH: 'frontend/dist'
+                DELETE_FLAG: 'true'
+
+  custom:
+    deploy-frontend:
+      - step:
+          name: Build Frontend
+          caches:
+            - npm-frontend
+          script:
+            - cd frontend
+            - npm ci
+            - npm run build
+          artifacts:
+            - frontend/dist/**
+      - step:
+          name: Deploy Frontend to GoDaddy
+          deployment: Production-Frontend
+          script:
+            - pipe: atlassian/ftp-deploy:0.3.7
+              variables:
+                USER: $GODADDY_USER
+                PASSWORD: $GODADDY_PASSWORD
+                SERVER: $GODADDY_HOST
+                REMOTE_PATH: $GODADDY_FRONTEND_PATH
+                LOCAL_PATH: 'frontend/dist'
+                DELETE_FLAG: 'true'
+
+    deploy-cms:
+      - step:
+          name: Build Backend (Payload CMS)
+          caches:
+            - npm-backend
+          script:
+            - cd backend
+            - npm ci
+            - npm run build
+          artifacts:
+            - backend/.next/**
+            - backend/public/**
+            - backend/package.json
+            - backend/package-lock.json
+            - backend/server.js
+      - step:
+          name: Deploy Backend to GoDaddy Node App
+          deployment: Production-CMS
+          script:
+            - pipe: atlassian/ftp-deploy:0.3.7
+              variables:
+                USER: $GODADDY_USER
+                PASSWORD: $GODADDY_PASSWORD
+                SERVER: $GODADDY_HOST
+                REMOTE_PATH: $GODADDY_BACKEND_PATH
+                LOCAL_PATH: 'backend'
