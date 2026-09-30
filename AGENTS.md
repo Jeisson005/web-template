@@ -1,53 +1,56 @@
-# AGENTS.md: AI Agent Operating Guidelines
+# AGENTS.md: Operational Interface for AI Agents
 
-This document governs behavior, architectural patterns, and development rules for any Artificial Intelligence agent working within this repository (`web-template`).
-
----
-
-## 1. Core Mission
-The primary objective of this repository is to serve as a **minimalist, modular, and production-ready starter template** for building any type of website. It enforces clean decoupling:
-1. **CMS (`backend/`)**: Single source of truth for dynamic content, collections, configuration, and media uploads.
-2. **Frontend (`frontend/`)**: Ultra-optimized static site generator using Astro, Tailwind CSS, Pagefind, and native SEO.
-3. **Docker Compose**: Standard for reproducible local execution and deployment.
+Operational commands, environmental constraints, and codebase conventions for automated agents working on this repository.
 
 ---
 
-## 2. Golden Rules for Agents
+## 1. Explicit Commands
 
-### 2.1. Architecture & Code Quality
-- **Simplicity & Minimalism**: Keep the user interface clean with only essentials. Do not add internal documentation or spec pages to the public user navigation.
-- **Zero Unnecessary Client-Side JavaScript**: Use native `.astro` components. Avoid client directives (`client:load`, `client:only`) unless strictly required for user interactions (e.g. search modal).
-- **Database Flexibility**: Never hardcode SQLite assumptions. The backend dynamically loads database drivers based on `DATABASE_URI` (SQLite by default, or PostgreSQL). Any database logic must remain engine-agnostic.
-- **Asset Storage**: Media uploads support local persistent volumes, S3/Cloudflare R2 buckets, and FTP mounts.
-- **Optional Multi-language Support**: i18n is pre-configured in Payload and Astro with `prefixDefaultLocale: false`. Single-language sites must function without mandatory language URL prefixes.
-- **Global Deployment Hook**: Never trigger rebuild hooks on individual document saves. Rebuilds are managed exclusively through the `Deploy` global ("Deployment / Rebuild Site") or the `/api/trigger-build` endpoint.
-- **Strict Payload Typing**: Whenever modifying collections in `backend/src/collections/` or globals in `backend/src/globals/`, run `npm run generate:types` in `backend/` and sync the types to `frontend/src/lib/payload-types.ts`.
-- **Tailwind Styling**: Use clean utility classes consistent with the design system. Never write messy inline CSS.
+| Action | Working Directory | Command | Notes |
+|---|---|---|---|
+| **Build Frontend** | `frontend/` | `npm run build` | Compiles Astro SSG and generates Pagefind search index in `dist/`. |
+| **Dev Frontend** | `frontend/` | `npm run dev` | Starts Astro dev server on `http://0.0.0.0:4321`. |
+| **Generate Types** | `backend/` | `npm run generate:types` | Updates `backend/src/payload-types.ts`. Must copy to `frontend/src/lib/`. |
+| **Dev Backend** | `backend/` | `npm run dev` | Starts Next.js/Payload server on `http://localhost:3000`. |
+| **Lint Backend** | `backend/` | `npm run lint` | ESLint check for CMS backend. |
+| **Test Backend** | `backend/` | `npm run test:int` | Runs Vitest integration suite. |
+| **Start Stack** | Root | `docker compose up -d` | Launches CMS and Web containers. |
+| **Rebuild Stack** | Root | `docker compose up -d --build` | Rebuilds and relaunches modified containers. |
+| **Stop Stack** | Root | `docker compose down` | Halts all containers without deleting data volumes. |
 
 ---
 
-## 3. Workflow Protocols
+## 2. Environment & Tooling Constraints
 
-### Step 1: Create a New Collection or Global
-1. Create the collection in `backend/src/collections/<CollectionName>.ts` or global in `backend/src/globals/<GlobalName>.ts`.
-2. Register it in `backend/src/payload.config.ts`.
-3. Run `npm run generate:types` inside `backend/`.
-4. Copy the generated types to `frontend/src/lib/payload-types.ts`.
+- **Package Manager**: Use `npm` across all subdirectories. Do not introduce yarn, pnpm, or bun lockfiles unless instructed.
+- **Node Runtime**: Node.js 22 LTS (Alpine base in Docker).
+- **Paths & Imports**: Always use the `@/*` alias for imports inside `frontend/src/` (configured in `frontend/tsconfig.json`). Never use deep relative paths (`../../`).
 
-### Step 2: Create a New Page in the Frontend
-1. Static route: Create `frontend/src/pages/<route>.astro`.
-2. Dynamic CMS route: Create `frontend/src/pages/[slug].astro` implementing `getStaticPaths()` with fallback handling when the CMS has no entries yet.
+---
 
-### Step 3: Docker Orchestration
-- Start the entire environment:
-  ```bash
-  docker compose up -d --build
-  ```
-- View real-time logs:
-  ```bash
-  docker compose logs -f
-  ```
-- Stop containers:
-  ```bash
-  docker compose down
-  ```
+## 3. Mandatory Gotchas & Conventions
+
+1. **Schema Modifications**:
+   Whenever adding or changing fields in `backend/src/collections/` or `backend/src/globals/`:
+   ```bash
+   cd backend && npm run generate:types && cp src/payload-types.ts ../frontend/src/lib/payload-types.ts
+   ```
+2. **Database Engine Independence**:
+   Never hardcode SQLite-specific queries or drivers. The database adapter is chosen dynamically via `DATABASE_URI` in `backend/src/payload.config.ts`.
+3. **Zero Unnecessary Client JavaScript**:
+   All new UI components must be native `.astro` files. Do not apply hydration directives (`client:load`, `client:only`) unless user interaction strictly requires client-side execution.
+4. **Draft Resiliency**:
+   The `Pages` collection uses `versions: { drafts: true }`. In frontend fetchers, always filter by `where[_status][equals]=published` or inspect document status safely.
+5. **No Per-Document Rebuild Hooks**:
+   Never trigger deployment webhooks on document save. Rebuilds are dispatched exclusively through the `Deploy` global or `POST /api/trigger-build`.
+6. **Centralized Configuration**:
+   Never hardcode `http://localhost:3000` or API endpoints in components. Always import from `@/lib/config`.
+
+---
+
+## 4. Operational Loop & Task Status
+
+Use this section to record completed iterations and metrics during automated agent tasks:
+- **Last Verified Build**: Frontend SSG build passed (3 pages, Pagefind indexed in 0.02s).
+- **Service Availability**: CMS (port 3000) and Frontend (port 4321) responsive.
+- **Active Spec**: `specs/template-core/spec.md`.
