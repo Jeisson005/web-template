@@ -226,8 +226,8 @@ const countries = [
   </div>
 </div>
 
-<!-- Script oficial de Google reCAPTCHA v2 -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- Script oficial de Google reCAPTCHA Enterprise -->
+<script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
 
 <!-- Scripts de Analytics y Seguimiento de Zoho CRM -->
 <script is:inline src="https://crm.zohopublic.com/crm/WebFormServlet?rid=289429997ac54e1bfe437e0ebde469a8547d9dc332ea8eb9bb67e1bc53f25ffd"></script>
@@ -243,9 +243,10 @@ const countries = [
 
       const isEn = document.documentElement.lang === 'en';
 
-      // 1. Validar que el reCAPTCHA haya sido resuelto
-      const recaptchaToken = (window as any).grecaptcha
-        ? (window as any).grecaptcha.getResponse()
+      // 1. Validar que el reCAPTCHA Enterprise haya sido resuelto
+      const grecap = (window as any).grecaptcha?.enterprise || (window as any).grecaptcha;
+      const recaptchaToken = grecap && typeof grecap.getResponse === 'function'
+        ? grecap.getResponse()
         : '';
 
       if (!recaptchaToken) {
@@ -315,8 +316,8 @@ const countries = [
             : '¡Gracias! Tu solicitud ha sido enviada con éxito. Nuestro equipo te contactará pronto.';
 
           (form as HTMLFormElement).reset();
-          if ((window as any).grecaptcha) {
-            (window as any).grecaptcha.reset();
+          if (grecap && typeof grecap.reset === 'function') {
+            grecap.reset();
           }
         } else {
           const errData = await response.json().catch(() => ({}));
@@ -326,8 +327,8 @@ const countries = [
           feedback.textContent = errData.error || (isEn
             ? 'An error occurred while submitting. Please check your data and try again.'
             : 'Ocurrió un error al enviar el formulario. Por favor verifica tus datos e intenta nuevamente.');
-          if ((window as any).grecaptcha) {
-            (window as any).grecaptcha.reset();
+          if (grecap && typeof grecap.reset === 'function') {
+            grecap.reset();
           }
         }
       } catch (err) {
@@ -337,8 +338,8 @@ const countries = [
         feedback.textContent = isEn
           ? 'Connection error. Please try again later.'
           : 'Error de conexión. Por favor intenta de nuevo más tarde.';
-        if ((window as any).grecaptcha) {
-          (window as any).grecaptcha.reset();
+        if (grecap && typeof grecap.reset === 'function') {
+          grecap.reset();
         }
       } finally {
         submitBtn.disabled = false;
