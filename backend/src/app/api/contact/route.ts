@@ -20,60 +20,28 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'reCAPTCHA token is required' }, { status: 400 });
     }
 
-    // 1. Verificar reCAPTCHA
-    const enterpriseProjectId = process.env.RECAPTCHA_ENTERPRISE_PROJECT_ID;
-    const enterpriseApiKey = process.env.RECAPTCHA_ENTERPRISE_API_KEY;
-    const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY;
+    // 1. Verificar reCAPTCHA con Google
+    const recaptchaSecret =
+      process.env.RECAPTCHA_SECRET_KEY || '6LcUPforAAAAAGh5FlL1FWf8ATnc8t5g90molOnz';
 
-    if (enterpriseProjectId && enterpriseApiKey) {
-      const assessmentRes = await fetch(
-        `https://recaptchaenterprise.googleapis.com/v1/projects/${enterpriseProjectId}/assessments?key=${enterpriseApiKey}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            event: {
-              token: recaptchaToken,
-              siteKey: '6LfywNktAAAAAHdcSJJ9CdEg-QjdJjgTx4uvZLGh',
-              expectedAction: 'contact_submit',
-            },
-          }),
-        }
+    const verifyParams = new URLSearchParams({
+      secret: recaptchaSecret,
+      response: recaptchaToken,
+    });
+
+    const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: verifyParams.toString(),
+    });
+
+    const verifyData = await verifyRes.json();
+
+    if (!verifyData.success) {
+      return NextResponse.json(
+        { error: 'reCAPTCHA verification failed', details: verifyData['error-codes'] },
+        { status: 400 }
       );
-      const assessmentData = await assessmentRes.json();
-      if (!assessmentData.tokenProperties?.valid) {
-        return NextResponse.json(
-          {
-            error: 'reCAPTCHA Enterprise verification failed',
-            details: assessmentData.tokenProperties?.invalidReason,
-          },
-          { status: 400 }
-        );
-      }
-    } else if (recaptchaSecret) {
-      const verifyParams = new URLSearchParams({
-        secret: recaptchaSecret,
-        response: recaptchaToken,
-      });
-
-      const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: verifyParams.toString(),
-      });
-
-      const verifyData = await verifyRes.json();
-
-      if (!verifyData.success) {
-        return NextResponse.json(
-          { error: 'reCAPTCHA verification failed', details: verifyData['error-codes'] },
-          { status: 400 }
-        );
-      }
-    } else {
-      if (typeof recaptchaToken !== 'string' || recaptchaToken.length < 20) {
-        return NextResponse.json({ error: 'Invalid reCAPTCHA token' }, { status: 400 });
-      }
     }
 
     // 2. Preparar datos para Zoho CRM (smartmaps)

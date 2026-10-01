@@ -38,72 +38,30 @@ if (empty($recaptchaToken)) {
     exit;
 }
 
-// 1. Verificar reCAPTCHA
-$enterpriseProjectId = getenv('RECAPTCHA_ENTERPRISE_PROJECT_ID');
-$enterpriseApiKey    = getenv('RECAPTCHA_ENTERPRISE_API_KEY');
-$recaptchaSecret     = getenv('RECAPTCHA_SECRET_KEY');
+// 1. Verificar reCAPTCHA con Google
+$recaptchaSecret = getenv('RECAPTCHA_SECRET_KEY') ?: '6LcUPforAAAAAGh5FlL1FWf8ATnc8t5g90molOnz';
 
-if (!empty($enterpriseProjectId) && !empty($enterpriseApiKey)) {
-    // Verificación vía Google Cloud reCAPTCHA Enterprise Assessment
-    $assessmentUrl = "https://recaptchaenterprise.googleapis.com/v1/projects/{$enterpriseProjectId}/assessments?key={$enterpriseApiKey}";
-    $payload = json_encode([
-        'event' => [
-            'token' => $recaptchaToken,
-            'siteKey' => '6LfywNktAAAAAHdcSJJ9CdEg-QjdJjgTx4uvZLGh',
-            'expectedAction' => 'contact_submit'
-        ]
+$verifyCh = curl_init('https://www.google.com/recaptcha/api/siteverify');
+curl_setopt($verifyCh, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($verifyCh, CURLOPT_POST, true);
+curl_setopt($verifyCh, CURLOPT_POSTFIELDS, http_build_query([
+    'secret' => $recaptchaSecret,
+    'response' => $recaptchaToken,
+    'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+]));
+curl_setopt($verifyCh, CURLOPT_TIMEOUT, 10);
+$verifyResponse = curl_exec($verifyCh);
+curl_close($verifyCh);
+
+$verifyResult = json_decode($verifyResponse, true);
+
+if (!isset($verifyResult['success']) || !$verifyResult['success']) {
+    http_response_code(400);
+    echo json_encode([
+        'error' => 'reCAPTCHA verification failed',
+        'details' => $verifyResult['error-codes'] ?? []
     ]);
-
-    $ch = curl_init($assessmentUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    $resData = json_decode($response, true);
-    if (!isset($resData['tokenProperties']['valid']) || !$resData['tokenProperties']['valid']) {
-        http_response_code(400);
-        echo json_encode([
-            'error' => 'reCAPTCHA Enterprise verification failed',
-            'details' => $resData['tokenProperties']['invalidReason'] ?? 'Invalid token'
-        ]);
-        exit;
-    }
-} elseif (!empty($recaptchaSecret)) {
-    // Verificación clásica vía siteverify
-    $verifyCh = curl_init('https://www.google.com/recaptcha/api/siteverify');
-    curl_setopt($verifyCh, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($verifyCh, CURLOPT_POST, true);
-    curl_setopt($verifyCh, CURLOPT_POSTFIELDS, http_build_query([
-        'secret' => $recaptchaSecret,
-        'response' => $recaptchaToken,
-        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
-    ]));
-    curl_setopt($verifyCh, CURLOPT_TIMEOUT, 10);
-    $verifyResponse = curl_exec($verifyCh);
-    curl_close($verifyCh);
-
-    $verifyResult = json_decode($verifyResponse, true);
-
-    if (!isset($verifyResult['success']) || !$verifyResult['success']) {
-        http_response_code(400);
-        echo json_encode([
-            'error' => 'reCAPTCHA verification failed',
-            'details' => $verifyResult['error-codes'] ?? []
-        ]);
-        exit;
-    }
-} else {
-    // Si es reCAPTCHA Enterprise y no se ha configurado la API Key de GCP en el servidor,
-    // se comprueba que el token provisto tenga longitud válida y no esté vacío.
-    if (strlen($recaptchaToken) < 20) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Invalid reCAPTCHA token']);
-        exit;
-    }
+    exit;
 }
 
 // 2. Preparar datos para Zoho CRM (Web-to-Lead)
