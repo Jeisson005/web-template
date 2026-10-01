@@ -22,6 +22,38 @@ const {
 } = Astro.props;
 
 const isEs = lang === 'es';
+
+const countries = [
+  'Colombia',
+  'México',
+  'Argentina',
+  'Bolivia',
+  'Brasil',
+  'Chile',
+  'Costa Rica',
+  'Cuba',
+  'Ecuador',
+  'El Salvador',
+  'España',
+  'Guatemala',
+  'Guayana Francesa',
+  'Granada',
+  'Guayana',
+  'Haití',
+  'Honduras',
+  'Jamaica',
+  'Nicaragua',
+  'Panamá',
+  'Paraguay',
+  'Perú',
+  'Puerto Rico',
+  'Rep. Dominicana',
+  'Surinam',
+  'Uruguay',
+  'USA',
+  'Venezuela',
+  'Otro',
+];
 ---
 
 <div
@@ -55,6 +87,17 @@ const isEs = lang === 'es';
         style="background: #FFFFFF; border-radius: 12px; padding: 32px; color: #0A1C4E; box-shadow: 0 20px 40px rgba(0,0,0,0.2);"
       >
         <form class="smartmaps-contact-form" style="margin: 0;">
+          <!-- Hidden Zoho CRM Web-to-Lead configuration fields -->
+          <input type="hidden" name="xnQsjsdp" value="5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304" />
+          <input type="hidden" name="xmIwtLD" value="b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77" />
+          <input type="hidden" name="actionType" value="TGVhZHM=" />
+          <input type="hidden" name="returnURL" value="null" />
+          <input type="hidden" name="zc_gad" id="zc_gad" value="" />
+          <input type="hidden" name="LEADCF14" value="SmartMaps Pro" />
+          <input type="hidden" name="Lead_Status" value="NO CONTACTADO" />
+          <input type="hidden" name="Lead_Source" value="Pag, WEB smartmaps" />
+          <input type="hidden" name="service" value="smarturl" />
+
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div style="grid-column: span 1;">
               <label style="font-size: 12px; font-weight: 700; margin-bottom: 6px; display: block;">
@@ -64,6 +107,7 @@ const isEs = lang === 'es';
                 type="text"
                 name="firstName"
                 required
+                maxlength="40"
                 placeholder={isEs ? 'Tu nombre' : 'Your first name'}
                 style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent;"
               />
@@ -77,6 +121,7 @@ const isEs = lang === 'es';
                 type="text"
                 name="lastName"
                 required
+                maxlength="80"
                 placeholder={isEs ? 'Tu apellido' : 'Your last name'}
                 style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent;"
               />
@@ -90,6 +135,7 @@ const isEs = lang === 'es';
                 type="text"
                 name="company"
                 required
+                maxlength="200"
                 placeholder={isEs ? 'Nombre de tu empresa' : 'Company name'}
                 style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent;"
               />
@@ -103,6 +149,7 @@ const isEs = lang === 'es';
                 type="email"
                 name="email"
                 required
+                maxlength="100"
                 placeholder="nombre@empresa.com"
                 style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent;"
               />
@@ -110,68 +157,56 @@ const isEs = lang === 'es';
 
             <div style="grid-column: span 1;">
               <label style="font-size: 12px; font-weight: 700; margin-bottom: 6px; display: block;">
-                {isEs ? 'País' : 'Country'} <span style="color: #D83B3B;">*</span>
+                {isEs ? 'País de origen' : 'Country of origin'} <span style="color: #D83B3B;">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 name="country"
                 required
-                placeholder={isEs ? 'Guatemala' : 'United States'}
-                style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent;"
-              />
+                style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: #FFFFFF; color: #0A1C4E;"
+              >
+                <option value="">{isEs ? 'Selecciona un país' : 'Select a country'}</option>
+                {countries.map((c) => (
+                  <option value={c}>{c}</option>
+                ))}
+              </select>
             </div>
 
             <div style="grid-column: span 1;">
               <label style="font-size: 12px; font-weight: 700; margin-bottom: 6px; display: block;">
-                {isEs ? 'Teléfono / WhatsApp' : 'Phone / WhatsApp'} <span style="color: #D83B3B;">*</span>
+                {isEs ? 'Celular / WhatsApp' : 'Phone / WhatsApp'}
               </label>
               <input
                 type="tel"
                 name="phone"
-                required
-                placeholder="+502 0000 0000"
+                maxlength="30"
+                placeholder="+57 300 000 0000"
                 style="width: 100%; height: 42px; padding: 0 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent;"
               />
             </div>
 
             <div style="grid-column: span 2;">
               <label style="font-size: 12px; font-weight: 700; margin-bottom: 6px; display: block;">
-                {isEs ? 'Detalle de la solicitud' : 'Request Details'}
+                {isEs ? 'Comentarios / Requerimientos' : 'Comments / Requirements'} <span style="color: #D83B3B;">*</span>
               </label>
               <textarea
                 name="details"
+                required
                 placeholder={
                   isEs
-                    ? 'Describe brevemente tu necesidad (máx. 200 caracteres)'
-                    : 'Briefly describe your requirements (max 200 characters)'
+                    ? 'Cuéntanos qué desafío buscas resolver con SmartMaps...'
+                    : 'Tell us about the challenge you are looking to solve with SmartMaps...'
                 }
-                maxlength="200"
-                style="width: 100%; height: 80px; padding: 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent; resize: none;"
+                style="width: 100%; height: 90px; padding: 12px; border: 1px solid #D2DCEE; border-radius: 6px; font-family: inherit; font-size: 14px; background: transparent; resize: vertical;"
               ></textarea>
             </div>
 
-            <!-- reCAPTCHA Simulation -->
-            <div style="grid-column: span 2; display: flex; justify-content: center; margin-top: 8px;">
-              <div
-                style="border: 1px solid #D2DCEE; border-radius: 4px; background: #FAFAFA; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; width: 260px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"
-              >
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
-                  <input
-                    type="checkbox"
-                    required
-                    style="width: 20px; height: 20px; accent-color: #1349D8; cursor: pointer;"
-                  />
-                  <span style="font-size: 13px; color: #333;">{isEs ? 'No soy un robot' : "I'm not a robot"}</span>
-                </label>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
-                  <i class="ph ph-arrows-clockwise" style="font-size: 24px; color: #4A90E2;"></i>
-                  <span style="font-size: 9px; color: #555;">reCAPTCHA</span>
-                </div>
-              </div>
+            <!-- Google reCAPTCHA v2 Oficial -->
+            <div style="grid-column: span 2; display: flex; justify-content: center; margin-top: 6px; min-height: 78px;">
+              <div class="g-recaptcha" data-sitekey="6LcUPforAAAAAEelfraIXxZHKVkW1HxgmqcBPb4N"></div>
             </div>
 
             <!-- Botón Submit -->
-            <div style="grid-column: span 2; margin-top: 8px;">
+            <div style="grid-column: span 2; margin-top: 4px;">
               <button
                 type="submit"
                 style="width: 100%; height: 48px; border: none; border-radius: 9999px; background: #2E7CFF; color: #FFFFFF; font-family: inherit; font-weight: 600; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;"
@@ -182,7 +217,7 @@ const isEs = lang === 'es';
 
             <div
               class="form-feedback"
-              style="grid-column: span 2; display: none; text-align: center; padding: 10px; border-radius: 6px; font-size: 14px; font-weight: 600;"
+              style="grid-column: span 2; display: none; text-align: center; padding: 12px; border-radius: 6px; font-size: 14px; font-weight: 600;"
             ></div>
           </div>
         </form>
@@ -190,6 +225,13 @@ const isEs = lang === 'es';
     </div>
   </div>
 </div>
+
+<!-- Script oficial de Google reCAPTCHA v2 -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<!-- Scripts de Analytics y Seguimiento de Zoho CRM -->
+<script is:inline src="https://crm.zohopublic.com/crm/WebFormServlet?rid=289429997ac54e1bfe437e0ebde469a8547d9dc332ea8eb9bb67e1bc53f25ffd"></script>
+<script is:inline id="wf_anal" src="https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=ca349e4bcd661c674b7a05bd06a3084ec9b827c191be516414e177babba7f64fcf198082e5bb46fec63cd31a96c15761gidd94e17f5dbcd28abe74592cb03e1ba77a86c08c56ae800724b3ad5a80e40d94agidb043dd2cd4552e0f20606e009ade1d093304b47955d9b10b4e336978b785d1bcgid6016d5745f11b015f59ec197ad3be515cd99f75fcdd94fe59bbeb601298dd867&tw=f11061c6dd17201b2ce59798b0c360a2354a1d30e6b05c5394587a6336b9acf4&version=v2"></script>
 
 <script>
   document.querySelectorAll('.smartmaps-contact-form').forEach((form) => {
@@ -199,38 +241,109 @@ const isEs = lang === 'es';
       const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
       if (!feedback || !submitBtn) return;
 
+      const isEn = document.documentElement.lang === 'en';
+
+      // 1. Validar que el reCAPTCHA haya sido resuelto
+      const recaptchaToken = (window as any).grecaptcha
+        ? (window as any).grecaptcha.getResponse()
+        : '';
+
+      if (!recaptchaToken) {
+        feedback.style.display = 'block';
+        feedback.style.backgroundColor = '#FDF2F2';
+        feedback.style.color = '#9B1C1C';
+        feedback.textContent = isEn
+          ? 'Please complete the reCAPTCHA verification before submitting.'
+          : 'Por favor completa la verificación de reCAPTCHA antes de enviar.';
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.style.opacity = '0.7';
+      feedback.style.display = 'none';
 
-      // Send to /api/messages if Payload CMS backend is active
       try {
         const formData = new FormData(form as HTMLFormElement);
         const data = Object.fromEntries(formData.entries());
 
-        await fetch('/api/messages', {
+        const payload = {
+          recaptchaToken,
+          ...data,
+          First_Name: data.firstName,
+          Last_Name: data.lastName,
+          Email: data.email,
+          Company: data.company,
+          Mobile: data.phone,
+          LEADCF2: data.country,
+          Description: data.details,
+          LEADCF14: 'SmartMaps Pro',
+          Lead_Status: 'NO CONTACTADO',
+          Lead_Source: 'Pag, WEB smartmaps',
+          xnQsjsdp: '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304',
+          xmIwtLD: 'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77',
+          actionType: 'TGVhZHM=',
+          returnURL: 'null',
+          zc_gad: (document.getElementById('zc_gad') as HTMLInputElement)?.value || '',
+          service: 'smarturl'
+        };
+
+        const response = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
-            email: data.email,
-            message: `Empresa: ${data.company} | País: ${data.country} | Tel: ${data.phone} | Detalle: ${data.details}`,
-          }),
-        }).catch(() => null);
+          body: JSON.stringify(payload),
+        });
+
+        if (response.ok) {
+          // Push event to dataLayer for Google Tag Manager / Analytics
+          (window as any).dataLayer = (window as any).dataLayer || [];
+          (window as any).dataLayer.push({
+            event: 'contact_form_submit',
+            user_data: {
+              email: data.email,
+              phone: data.phone,
+              firstName: data.firstName,
+              lastName: data.lastName,
+              company: data.company,
+            },
+          });
+
+          feedback.style.display = 'block';
+          feedback.style.backgroundColor = '#EBFBF2';
+          feedback.style.color = '#1D7846';
+          feedback.textContent = isEn
+            ? 'Thank you! Your request has been successfully submitted. Our team will contact you shortly.'
+            : '¡Gracias! Tu solicitud ha sido enviada con éxito. Nuestro equipo te contactará pronto.';
+
+          (form as HTMLFormElement).reset();
+          if ((window as any).grecaptcha) {
+            (window as any).grecaptcha.reset();
+          }
+        } else {
+          const errData = await response.json().catch(() => ({}));
+          feedback.style.display = 'block';
+          feedback.style.backgroundColor = '#FDF2F2';
+          feedback.style.color = '#9B1C1C';
+          feedback.textContent = errData.error || (isEn
+            ? 'An error occurred while submitting. Please check your data and try again.'
+            : 'Ocurrió un error al enviar el formulario. Por favor verifica tus datos e intenta nuevamente.');
+          if ((window as any).grecaptcha) {
+            (window as any).grecaptcha.reset();
+          }
+        }
       } catch (err) {
-        // silent fallback
+        feedback.style.display = 'block';
+        feedback.style.backgroundColor = '#FDF2F2';
+        feedback.style.color = '#9B1C1C';
+        feedback.textContent = isEn
+          ? 'Connection error. Please try again later.'
+          : 'Error de conexión. Por favor intenta de nuevo más tarde.';
+        if ((window as any).grecaptcha) {
+          (window as any).grecaptcha.reset();
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
       }
-
-      feedback.style.display = 'block';
-      feedback.style.backgroundColor = '#EBFBF2';
-      feedback.style.color = '#1D7846';
-      feedback.textContent =
-        document.documentElement.lang === 'en'
-          ? 'Thank you! Your request has been received. Our team will contact you shortly.'
-          : '¡Gracias! Tu solicitud ha sido recibida. Nuestro equipo te contactará pronto.';
-
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = '1';
-      (form as HTMLFormElement).reset();
     });
   });
 </script>
