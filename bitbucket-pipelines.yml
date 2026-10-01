@@ -35,7 +35,9 @@ pipelines:
           name: Deploy Frontend to GoDaddy
           trigger: manual
           script:
-            - pipe: atlassian/ftp-deploy:0.3.7
+            - echo "Checking local build artifacts:"
+            - ls -la frontend/dist
+            - pipe: atlassian/ftp-deploy:0.7.0
               variables:
                 USER: $GODADDY_USER
                 PASSWORD: $GODADDY_PASSWORD
@@ -43,6 +45,7 @@ pipelines:
                 REMOTE_PATH: $GODADDY_FRONTEND_PATH
                 LOCAL_PATH: 'frontend/dist'
                 DELETE_FLAG: 'true'
+                DEBUG: 'true'
       - step:
           name: Sync Backend to GitHub (GoDaddy Node App)
           script:
@@ -70,7 +73,9 @@ pipelines:
       - step:
           name: Deploy Frontend to GoDaddy
           script:
-            - pipe: atlassian/ftp-deploy:0.3.7
+            - echo "Checking local build artifacts:"
+            - ls -la frontend/dist
+            - pipe: atlassian/ftp-deploy:0.7.0
               variables:
                 USER: $GODADDY_USER
                 PASSWORD: $GODADDY_PASSWORD
@@ -78,6 +83,7 @@ pipelines:
                 REMOTE_PATH: $GODADDY_FRONTEND_PATH
                 LOCAL_PATH: 'frontend/dist'
                 DELETE_FLAG: 'true'
+                DEBUG: 'true'
 
     deploy-cms:
       - step:
