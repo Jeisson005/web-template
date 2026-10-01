@@ -5,9 +5,12 @@
 
 DirectoryIndex index.html
 
-# 1. Reescritura y Redirección HTTPS
+# 1. Reescritura y Rutas Limpias
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Permitir validación de Let's Encrypt / ACME challenge
+  RewriteRule ^\.well-known/ - [L]
 
   # Manejo de rutas limpias para subdirectorios de Astro (ej. /data -> /data/index.html)
   RewriteCond %{REQUEST_FILENAME} !-f
