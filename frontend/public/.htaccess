@@ -3,14 +3,11 @@
 # Compatible with Astro SSG static builds
 # ----------------------------------------------------------------------
 
-# 1. Seguridad Básica y Opciones
-Options -Indexes
-ServerSignature Off
+DirectoryIndex index.html
 
-# 2. Reescritura y Redirección HTTPS
+# 1. Reescritura y Redirección HTTPS
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /
 
   # Forzar HTTPS en producción (si no está activo)
   RewriteCond %{HTTPS} off
@@ -23,7 +20,7 @@ ServerSignature Off
   RewriteRule ^(.*)$ $1/index.html [L]
 </IfModule>
 
-# 3. Tipos MIME Modernos
+# 2. Tipos MIME Modernos
 <IfModule mod_mime.c>
   AddType image/svg+xml .svg .svgz
   AddEncoding gzip .svgz
@@ -36,7 +33,7 @@ ServerSignature Off
   AddType text/javascript .js .mjs
 </IfModule>
 
-# 4. Compresión GZIP / Brotli
+# 3. Compresión GZIP / Brotli
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/plain
   AddOutputFilterByType DEFLATE text/html
@@ -54,7 +51,7 @@ ServerSignature Off
   AddOutputFilterByType DEFLATE font/woff2
 </IfModule>
 
-# 5. Políticas de Caché en el Navegador (Expires y Cache-Control)
+# 4. Políticas de Caché en el Navegador (Expires y Cache-Control)
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresDefault "access plus 1 month"
@@ -84,14 +81,11 @@ ServerSignature Off
   # Fuentes
   ExpiresByType font/woff "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresByType application/font-woff "access plus 1 year"
-  ExpiresByType application/font-woff2 "access plus 1 year"
 </IfModule>
 
-# 6. Cabeceras de Seguridad
+# 5. Cabeceras de Seguridad Básicas
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 </IfModule>
