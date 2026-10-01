@@ -49,7 +49,7 @@ if (!empty($enterpriseProjectId) && !empty($enterpriseApiKey)) {
     $payload = json_encode([
         'event' => [
             'token' => $recaptchaToken,
-            'siteKey' => '6LfOztktAAAAAOtqABjBqcY0nt55OA-0aef2DhUF',
+            'siteKey' => '6LfywNktAAAAAHdcSJJ9CdEg-QjdJjgTx4uvZLGh',
             'expectedAction' => 'contact_submit'
         ]
     ]);

@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           body: JSON.stringify({
             event: {
               token: recaptchaToken,
-              siteKey: '6LfOztktAAAAAOtqABjBqcY0nt55OA-0aef2DhUF',
+              siteKey: '6LfywNktAAAAAHdcSJJ9CdEg-QjdJjgTx4uvZLGh',
               expectedAction: 'contact_submit',
             },
           }),
