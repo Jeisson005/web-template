@@ -90,16 +90,8 @@ const countries = [
         style="background: #FFFFFF; border-radius: 12px; padding: 32px; color: #0A1C4E; box-shadow: 0 20px 40px rgba(0,0,0,0.2);"
       >
         <form class="smartmaps-contact-form" data-endpoint={BACKEND_CONTACT_ENDPOINT} style="margin: 0;">
-          <!-- Hidden Zoho CRM Web-to-Lead configuration fields -->
-          <input type="hidden" name="xnQsjsdp" value="5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304" />
-          <input type="hidden" name="xmIwtLD" value="b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77" />
-          <input type="hidden" name="actionType" value="TGVhZHM=" />
-          <input type="hidden" name="returnURL" value="null" />
+          <!-- Lead attribution tracking (Google Ads / GCLID) -->
           <input type="hidden" name="zc_gad" id="zc_gad" value="" />
-          <input type="hidden" name="LEADCF14" value="SmartMaps Pro" />
-          <input type="hidden" name="Lead_Status" value="NO CONTACTADO" />
-          <input type="hidden" name="Lead_Source" value="Pag, WEB smartmaps" />
-          <input type="hidden" name="service" value="smarturl" />
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
             <div style="grid-column: span 1;">
@@ -272,7 +264,6 @@ const countries = [
 
         const payload = {
           recaptchaToken,
-          ...data,
           First_Name: data.firstName,
           Last_Name: data.lastName,
           Email: data.email,
@@ -280,15 +271,7 @@ const countries = [
           Mobile: data.phone,
           LEADCF2: data.country,
           Description: data.details,
-          LEADCF14: 'SmartMaps Pro',
-          Lead_Status: 'NO CONTACTADO',
-          Lead_Source: 'Pag, WEB smartmaps',
-          xnQsjsdp: '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304',
-          xmIwtLD: 'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77',
-          actionType: 'TGVhZHM=',
-          returnURL: 'null',
           zc_gad: (document.getElementById('zc_gad') as HTMLInputElement)?.value || '',
-          service: 'smarturl'
         };
 
         const endpoint = (form as HTMLFormElement).dataset.endpoint || '/api/contact';
