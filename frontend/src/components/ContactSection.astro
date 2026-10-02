@@ -24,6 +24,7 @@ const {
 } = Astro.props;
 
 const isEs = lang === 'es';
+const recaptchaSiteKey = import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY || '6LcUPforAAAAAEelfraIXxZHKVkW1HxgmqcBPb4N';
 
 const countries = [
   'Colombia',
@@ -204,7 +205,7 @@ const countries = [
 
             <!-- Google reCAPTCHA v2 Oficial -->
             <div style="grid-column: span 2; display: flex; justify-content: center; margin-top: 6px; min-height: 78px;">
-              <div class="g-recaptcha" data-sitekey="6LcUPforAAAAAEelfraIXxZHKVkW1HxgmqcBPb4N"></div>
+              <div class="g-recaptcha" data-sitekey={recaptchaSiteKey}></div>
             </div>
 
             <!-- Botón Submit -->

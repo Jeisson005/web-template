@@ -46,9 +46,9 @@ export async function POST(req: Request) {
 
     // 2. Preparar datos para Zoho CRM (smartmaps)
     const zohoParams = new URLSearchParams({
-      xnQsjsdp: '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304',
+      xnQsjsdp: process.env.ZOHO_CRM_XNQSJSDP || '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304',
       xmIwtLD:
-        'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77',
+        process.env.ZOHO_CRM_XMIWTLD || 'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77',
       actionType: 'TGVhZHM=',
       returnURL: 'null',
       zc_gad: formData.zc_gad || '',
@@ -62,10 +62,10 @@ export async function POST(req: Request) {
       LEADCF2: formData.LEADCF2 || formData.country || '-None-',
       Description: formData.Description || formData.details || formData.message || '',
 
-      LEADCF14: formData.LEADCF14 || 'SmartMaps Pro',
+      LEADCF14: process.env.ZOHO_CRM_LEADCF14 || formData.LEADCF14 || 'SmartMaps Pro',
       'Lead Status': formData.Lead_Status || 'NO CONTACTADO',
       'Lead Source': formData.Lead_Source || 'Pag, WEB smartmaps',
-      service: 'smarturl',
+      service: process.env.ZOHO_CRM_SERVICE || 'smarturl',
     });
 
     // 3. Enviar a Zoho CRM
