@@ -63,7 +63,8 @@ pipelines:
                 SERVER: ${GODADDY_HOST:-$HOST}
                 REMOTE_PATH: ${GODADDY_FRONTEND_PATH:-"/"}
                 LOCAL_PATH: 'frontend/dist'
-                DELETE_FLAG: 'true'
+                DELETE_FLAG: 'false'
+                EXTRA_ARGS: '--exclude=media/ --exclude=backend/'
                 DEBUG: 'true'
 
       - step:
