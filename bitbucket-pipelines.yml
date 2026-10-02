@@ -92,6 +92,12 @@ pipelines:
       - step:
           name: Sync CMS to GitHub (GoDaddy Node App)
           script:
+            - |
+              if [ -z "$GITHUB_TOKEN" ]; then
+                echo "⚠️ ERROR: GITHUB_TOKEN no está configurado en las variables de Bitbucket."
+                echo "Por favor añade GITHUB_TOKEN (Personal Access Token con permiso 'repo') en Repository Settings -> Repository Variables."
+                exit 1
+              fi
             - apk add --no-cache git
             - cd cms
             - git init -b main
