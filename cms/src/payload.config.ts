@@ -17,7 +17,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 // 1. Flexible database resolution (SQLite by default, or Postgres if specified in DATABASE_URI)
-const dbUri = process.env.DATABASE_URI || process.env.DATABASE_URL || 'file:./backend.db'
+const dbUri = process.env.DATABASE_URI || process.env.DATABASE_URL || 'file:./cms.db'
 const isPostgres = dbUri.startsWith('postgres://') || dbUri.startsWith('postgresql://') || process.env.DB_ADAPTER === 'postgres'
 
 const databaseAdapter = isPostgres

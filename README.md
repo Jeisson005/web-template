@@ -33,7 +33,7 @@ docker compose up -d --build
 ## 🧭 Architecture Highlights
 
 - **Frontend**: Astro v5+ configured in static mode (`output: 'static'`) with Tailwind CSS v4 and Pagefind offline search.
-- **Backend / CMS**: Payload CMS 3 running on Node 22 with SQLite by default (or PostgreSQL by updating `DATABASE_URI` in `.env`).
+- **CMS**: Payload CMS 3 running on Node 22 with SQLite by default (or PostgreSQL by updating `DATABASE_URI` in `.env`).
 - **Media Storage**: Local Docker persistent volume (`cms-media`) with instant support for AWS S3, Cloudflare R2, or MinIO via environment variables.
 - **Global Rebuild**: Trigger full site recompilations with a single button under **"Deployment / Rebuild Site"** in the CMS admin panel.
 

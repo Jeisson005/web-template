@@ -2,7 +2,7 @@ services:
   # Capa de Contenido y Datos (CMS Headless con soporte SQLite / Postgres y Storage S3/Local)
   cms:
     build:
-      context: ./backend
+      context: ./cms
       dockerfile: Dockerfile
     container_name: web-template-cms
     restart: unless-stopped
@@ -12,7 +12,7 @@ services:
       - PORT=3000
       - NODE_ENV=development
       # Base de datos: SQLite por defecto (o poner postgresql://... para Postgres)
-      - DATABASE_URI=${DATABASE_URI:-file:/app/data/backend.db}
+      - DATABASE_URI=${DATABASE_URI:-file:/app/data/cms.db}
       - PAYLOAD_SECRET=${PAYLOAD_SECRET:-super-secret-payload-key-change-in-prod-12345}
       - MEDIA_DIR=/app/media
       # Almacenamiento en nube (descomentar y definir para S3/R2)
