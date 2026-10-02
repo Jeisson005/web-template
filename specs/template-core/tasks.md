@@ -2,9 +2,9 @@
 
 Sequential task breakdown for automated implementation and verification.
 
-- [x] **Task 1: Backend Scaffolding & Multi-DB Configuration**
-  - [x] Install `@payloadcms/db-postgres` and `@payloadcms/storage-s3` in `backend/`.
-  - [x] Implement dynamic database resolution in `backend/src/payload.config.ts`.
+- [x] **Task 1: CMS Scaffolding & Multi-DB Configuration**
+  - [x] Install `@payloadcms/db-postgres` and `@payloadcms/storage-s3` in `cms/`.
+  - [x] Implement dynamic database resolution in `cms/src/payload.config.ts`.
   - [x] Add CORS and CSRF origin whitelisting in Payload config.
 
 - [x] **Task 2: Content Collections & Rebuild Global**

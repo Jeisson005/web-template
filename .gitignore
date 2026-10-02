@@ -32,10 +32,13 @@ next-env.d.ts
 *.sqlite3
 data/
 backend/backend.db*
+cms/cms.db*
+cms/backend.db*
 
 # Media and uploaded assets (local volume)
 media/
 backend/media/
+cms/media/
 
 # Logs
 logs/

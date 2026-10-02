@@ -3,15 +3,15 @@
 ## 1. Architectural Changes (Deltas)
 
 ### ADDED
-- `backend/src/globals/Deploy.ts`: Centralized Global with `beforeChange` hook to dispatch `BUILD_WEBHOOK_URL`.
-- `backend/src/collections/Pages.ts`: Collection with `versions: { drafts: true }`, Lexical RichText, and SEO fields.
-- `backend/src/collections/Messages.ts`: Public-writable collection for contact submissions.
+- `cms/src/globals/Deploy.ts`: Centralized Global with `beforeChange` hook to dispatch `BUILD_WEBHOOK_URL`.
+- `cms/src/collections/Pages.ts`: Collection with `versions: { drafts: true }`, Lexical RichText, and SEO fields.
+- `cms/src/collections/Messages.ts`: Public-writable collection for contact submissions.
 - `frontend/src/lib/config.ts`: Centralized URL configuration module preventing hardcoded hosts.
 - `frontend/src/lib/lexicalToHtml.ts`: AST serializer handling paragraphs, headings, lists, quotes, code blocks, and media uploads.
 - `docker-compose.yml`: Bridge network `web-template-net` with persistent volumes `cms-data` and `cms-media`.
 
 ### MODIFIED
-- `backend/src/payload.config.ts`:
+- `cms/src/payload.config.ts`:
   - Added dynamic database resolution selecting between `@payloadcms/db-sqlite` and `@payloadcms/db-postgres`.
   - Added `s3Storage` conditional plugin mapping to `media` collection.
   - Added `cors` and `csrf` origin arrays matching `PUBLIC_SITE_URL`.
@@ -29,8 +29,8 @@
 
 ### Database Resolution Logic
 ```typescript
-// backend/src/payload.config.ts
-const dbUri = process.env.DATABASE_URI || 'file:./backend.db';
+// cms/src/payload.config.ts
+const dbUri = process.env.DATABASE_URI || 'file:./cms.db';
 const isPostgres = dbUri.startsWith('postgres://') || dbUri.startsWith('postgresql://');
 
 const databaseAdapter = isPostgres

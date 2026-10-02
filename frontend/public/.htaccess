@@ -11,11 +11,10 @@ DirectoryIndex index.html
 
   # Permitir validación de Let's Encrypt / ACME challenge
   RewriteRule ^\.well-known/ - [L]
-
-  # Endpoint API Contacto Zoho
+  # Endpoint API Contacto Zoho (procesamiento PHP en hosting estático)
   RewriteRule ^api/contact/?$ /api/contact.php [L,QSA]
 
-  # Manejo de rutas limpias para subdirectorios de Astro (ej. /data -> /data/index.html)
+  # Manejo de rutas limpias para subdirectorios de Astro (ej. /contact -> /contact/index.html)
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME}/index.html -f
   RewriteRule ^(.*)$ $1/index.html [L]
