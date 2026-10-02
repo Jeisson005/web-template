@@ -12,6 +12,7 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Messages } from './collections/Messages'
 import { Deploy } from './globals/Deploy'
+import { ftpStorage } from './plugins/storage-ftp'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -32,10 +33,36 @@ const databaseAdapter = isPostgres
       },
     })
 
-// 2. Storage resolution (Local persistent directory by default, or S3/R2/MinIO if S3_BUCKET is provided)
+// 2. Storage resolution:
+//    - FTP (GoDaddy or custom FTP server) if FTP_HOST or GODADDY_USER is provided
+//    - S3 / Cloudflare R2 / MinIO if S3_BUCKET is provided
+//    - Local persistent directory otherwise (MEDIA_DIR)
 const plugins = []
 
-if (process.env.S3_BUCKET) {
+const ftpHost = process.env.FTP_HOST || process.env.GODADDY_HOST || process.env.HOST
+const ftpUser = process.env.FTP_USER || process.env.GODADDY_USER
+
+if (ftpHost && ftpUser) {
+  const publicHost = process.env.SITE_URL || `https://${ftpHost}`
+  const remotePath = process.env.FTP_REMOTE_DIR || `${process.env.GODADDY_FRONTEND_PATH || ''}/media`
+
+  plugins.push(
+    ftpStorage({
+      collections: {
+        media: true,
+      },
+      config: {
+        host: ftpHost,
+        user: ftpUser,
+        password: process.env.FTP_PASSWORD || process.env.GODADDY_PASSWORD || '',
+        port: process.env.FTP_PORT ? parseInt(process.env.FTP_PORT, 10) : 21,
+        secure: process.env.FTP_SECURE === 'true',
+        remoteDir: remotePath.startsWith('/') ? remotePath : `/${remotePath}`,
+        publicUrl: process.env.FTP_PUBLIC_URL || `${publicHost.replace(/\/+$/, '')}/media`,
+      },
+    })
+  )
+} else if (process.env.S3_BUCKET) {
   plugins.push(
     s3Storage({
       collections: {
