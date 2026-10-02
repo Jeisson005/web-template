@@ -9,13 +9,13 @@ This repository provides a minimalist, decoupled, and production-ready starter t
 
 | Module | Location | Status | Description |
 |---|---|---|---|
-| **Core CMS** | `backend/` | **Stable** | Payload CMS 3 running on Next.js App Router with REST and GraphQL APIs. |
-| **Collections & Schemas** | `backend/src/collections/` | **Stable** | `Pages` (with draft support), `Media` (uploads), `Messages` (contact submissions), and `Users`. |
-| **Global Deployment Hook** | `backend/src/globals/Deploy.ts` | **Stable** | Centralized trigger to dispatch production rebuild webhooks. |
+| **Core CMS** | `cms/` | **Stable** | Payload CMS 3 running on Next.js App Router with REST and GraphQL APIs. |
+| **Collections & Schemas** | `cms/src/collections/` | **Stable** | `Pages` (with draft support), `Media` (uploads), `Messages` (contact submissions), and `Users`. |
+| **Global Deployment Hook** | `cms/src/globals/Deploy.ts` | **Stable** | Centralized trigger to dispatch production rebuild webhooks. |
 | **Frontend SSG** | `frontend/` | **Stable** | Astro v5+ static site generator with native `.astro` components. |
 | **Design System** | `frontend/src/styles/` | **Stable** | Tailwind CSS v4 atomic utility styling with dark theme baseline. |
 | **Static Search** | `frontend/src/components/SearchModal.astro` | **Stable** | Zero-server search indexed post-build via Pagefind. |
-| **Asset Pipeline** | `backend/media/` & `frontend/src/lib/` | **Stable** | Local persistent storage with pre-configured S3 bucket and FTP compatibility. |
+| **Asset Pipeline** | `cms/media/` & `frontend/src/lib/` | **Stable** | Local persistent storage with pre-configured S3 bucket and FTP compatibility. |
 | **i18n Localization** | CMS & Frontend Config | **Ready (Optional)** | English default with Spanish routing prepared without mandatory subpath prefixes. |
 | **Orchestration** | `docker-compose.yml` | **Stable** | Multi-container setup for CMS (port 3000) and Frontend (port 4321). |
 

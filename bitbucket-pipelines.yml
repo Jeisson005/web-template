@@ -6,7 +6,8 @@
 #   - GODADDY_USER:          Usuario FTP / cPanel
 #   - GODADDY_PASSWORD:      Contraseña FTP / cPanel (Marcar como Secured)
 #   - GODADDY_FRONTEND_PATH: Ruta en el hosting para la web estática (ej. /public_html)
-#   - GODADDY_BACKEND_PATH:  (Opcional) Ruta de la app Node en cPanel (ej. /cms)
+#   - GODADDY_CMS_PATH:      (Opcional) Ruta de la app Node en cPanel (ej. /cms)
+#   - GODADDY_BACKEND_PATH:  (Fallback retrocompatible) Ruta de la app Node en cPanel
 #   - GITHUB_TOKEN:          Token de acceso personal de GitHub con permisos de repo (Secured)
 #   - GITHUB_REPO:           Repositorio en GitHub para GoDaddy (ej. Intelligis-Colombia/smartmaps-cms)
 # ==============================================================================
@@ -16,7 +17,7 @@ image: node:22-alpine
 definitions:
   caches:
     npm-frontend: frontend/node_modules
-    npm-backend: backend/node_modules
+    npm-cms: cms/node_modules
 
 pipelines:
   branches:
@@ -47,15 +48,15 @@ pipelines:
                 DELETE_FLAG: 'true'
                 DEBUG: 'true'
       - step:
-          name: Sync Backend to GitHub (GoDaddy Node App)
+          name: Sync CMS to GitHub (GoDaddy Node App)
           script:
             - apk add --no-cache git
-            - cd backend
+            - cd cms
             - git init -b main
             - git config user.name "Bitbucket CI"
             - git config user.email "ci@bitbucket.org"
             - git add .
-            - git commit -m "Sync backend from Bitbucket"
+            - git commit -m "Sync cms from Bitbucket"
             - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO}.git main --force
 
   custom:
@@ -87,39 +88,39 @@ pipelines:
 
     deploy-cms:
       - step:
-          name: Build Backend (Payload CMS)
+          name: Build CMS (Payload CMS)
           caches:
-            - npm-backend
+            - npm-cms
           script:
-            - cd backend
+            - cd cms
             - npm ci
             - npm run build
           artifacts:
-            - backend/.next/**
-            - backend/public/**
-            - backend/package.json
-            - backend/package-lock.json
-            - backend/server.js
+            - cms/.next/**
+            - cms/public/**
+            - cms/package.json
+            - cms/package-lock.json
+            - cms/server.js
       - step:
-          name: Deploy Backend to GoDaddy Node App
+          name: Deploy CMS to GoDaddy Node App
           script:
             - pipe: atlassian/ftp-deploy:0.3.7
               variables:
                 USER: $GODADDY_USER
                 PASSWORD: $GODADDY_PASSWORD
                 SERVER: $GODADDY_HOST
-                REMOTE_PATH: $GODADDY_BACKEND_PATH
-                LOCAL_PATH: 'backend'
+                REMOTE_PATH: ${GODADDY_CMS_PATH:-$GODADDY_BACKEND_PATH}
+                LOCAL_PATH: 'cms'
 
-    sync-backend-github:
+    sync-cms-github:
       - step:
-          name: Sync Backend to GitHub (GoDaddy Node App)
+          name: Sync CMS to GitHub (GoDaddy Node App)
           script:
             - apk add --no-cache git
-            - cd backend
+            - cd cms
             - git init -b main
             - git config user.name "Bitbucket CI"
             - git config user.email "ci@bitbucket.org"
             - git add .
-            - git commit -m "Sync backend from Bitbucket"
+            - git commit -m "Sync cms from Bitbucket"
             - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO}.git main --force

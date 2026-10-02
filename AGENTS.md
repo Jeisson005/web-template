@@ -10,10 +10,10 @@ Operational commands, environmental constraints, and codebase conventions for au
 |---|---|---|---|
 | **Build Frontend** | `frontend/` | `npm run build` | Compiles Astro SSG and generates Pagefind search index in `dist/`. |
 | **Dev Frontend** | `frontend/` | `npm run dev` | Starts Astro dev server on `http://0.0.0.0:4321`. |
-| **Generate Types** | `backend/` | `npm run generate:types` | Updates `backend/src/payload-types.ts`. Must copy to `frontend/src/lib/`. |
-| **Dev Backend** | `backend/` | `npm run dev` | Starts Next.js/Payload server on `http://localhost:3000`. |
-| **Lint Backend** | `backend/` | `npm run lint` | ESLint check for CMS backend. |
-| **Test Backend** | `backend/` | `npm run test:int` | Runs Vitest integration suite. |
+| **Generate Types** | `cms/` | `npm run generate:types` | Updates `cms/src/payload-types.ts`. Must copy to `frontend/src/lib/`. |
+| **Dev CMS** | `cms/` | `npm run dev` | Starts Next.js/Payload server on `http://localhost:3000`. |
+| **Lint CMS** | `cms/` | `npm run lint` | ESLint check for CMS. |
+| **Test CMS** | `cms/` | `npm run test:int` | Runs Vitest integration suite. |
 | **Start Stack** | Root | `docker compose up -d` | Launches CMS and Web containers. |
 | **Rebuild Stack** | Root | `docker compose up -d --build` | Rebuilds and relaunches modified containers. |
 | **Stop Stack** | Root | `docker compose down` | Halts all containers without deleting data volumes. |
@@ -31,12 +31,12 @@ Operational commands, environmental constraints, and codebase conventions for au
 ## 3. Mandatory Gotchas & Conventions
 
 1. **Schema Modifications**:
-   Whenever adding or changing fields in `backend/src/collections/` or `backend/src/globals/`:
+   Whenever adding or changing fields in `cms/src/collections/` or `cms/src/globals/`:
    ```bash
-   cd backend && npm run generate:types && cp src/payload-types.ts ../frontend/src/lib/payload-types.ts
+   cd cms && npm run generate:types && cp src/payload-types.ts ../frontend/src/lib/payload-types.ts
    ```
 2. **Database Engine Independence**:
-   Never hardcode SQLite-specific queries or drivers. The database adapter is chosen dynamically via `DATABASE_URI` in `backend/src/payload.config.ts`.
+   Never hardcode SQLite-specific queries or drivers. The database adapter is chosen dynamically via `DATABASE_URI` in `cms/src/payload.config.ts`.
 3. **Zero Unnecessary Client JavaScript**:
    All new UI components must be native `.astro` files. Do not apply hydration directives (`client:load`, `client:only`) unless user interaction strictly requires client-side execution.
 4. **Draft Resiliency**:

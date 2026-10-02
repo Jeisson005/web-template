@@ -5,7 +5,7 @@ project:
   repository: "local"
 
 stack:
-  backend:
+  cms:
     framework: "Payload CMS v3"
     runtime: "Node.js 22 (Alpine)"
     database:
