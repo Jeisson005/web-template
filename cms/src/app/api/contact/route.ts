@@ -44,13 +44,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Preparar datos para Zoho CRM (smartmaps)
+    // 2. Preparar datos para Zoho CRM (formulario, variables amigables o fallbacks)
     const zohoParams = new URLSearchParams({
-      xnQsjsdp: process.env.ZOHO_CRM_XNQSJSDP || '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304',
+      xnQsjsdp:
+        formData.xnQsjsdp ||
+        process.env.ZOHO_CRM_FORM_ID ||
+        process.env.ZOHO_CRM_XNQSJSDP ||
+        '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304',
       xmIwtLD:
-        process.env.ZOHO_CRM_XMIWTLD || 'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77',
-      actionType: 'TGVhZHM=',
-      returnURL: 'null',
+        formData.xmIwtLD ||
+        process.env.ZOHO_CRM_FORM_TOKEN ||
+        process.env.ZOHO_CRM_XMIWTLD ||
+        'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77',
+      actionType: formData.actionType || 'TGVhZHM=',
+      returnURL: formData.returnURL || 'null',
       zc_gad: formData.zc_gad || '',
       aG9uZXlwb3Q: '',
 

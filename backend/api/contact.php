@@ -84,17 +84,17 @@ if (!isset($verifyResult['success']) || !$verifyResult['success']) {
     exit;
 }
 
-// 2. Preparar datos para Zoho CRM (variables o fallbacks oficiales de Smartmaps)
-$zohoXnQsjsdp = getenv('ZOHO_CRM_XNQSJSDP') ?: '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304';
-$zohoXmIwtLD  = getenv('ZOHO_CRM_XMIWTLD') ?: 'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77';
-$zohoService  = getenv('ZOHO_CRM_SERVICE') ?: 'smarturl';
-$zohoLeadCf14 = getenv('ZOHO_CRM_LEADCF14') ?: 'SmartMaps Pro';
+// 2. Preparar datos para Zoho CRM (toma del formulario, variables de entorno o fallbacks de Smartmaps)
+$zohoXnQsjsdp = $inputData['xnQsjsdp'] ?? getenv('ZOHO_CRM_FORM_ID') ?? getenv('ZOHO_CRM_XNQSJSDP') ?: '5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304';
+$zohoXmIwtLD  = $inputData['xmIwtLD']  ?? getenv('ZOHO_CRM_FORM_TOKEN') ?? getenv('ZOHO_CRM_XMIWTLD') ?: 'b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77';
+$zohoService  = $inputData['service']  ?? getenv('ZOHO_CRM_SERVICE') ?: 'smarturl';
+$zohoLeadCf14 = $inputData['LEADCF14'] ?? getenv('ZOHO_CRM_LEADCF14') ?: 'SmartMaps Pro';
 
 $zohoData = [
     'xnQsjsdp'    => $zohoXnQsjsdp,
     'xmIwtLD'     => $zohoXmIwtLD,
-    'actionType'  => 'TGVhZHM=',
-    'returnURL'   => 'null',
+    'actionType'  => $inputData['actionType'] ?? 'TGVhZHM=',
+    'returnURL'   => $inputData['returnURL'] ?? 'null',
     'zc_gad'      => $inputData['zc_gad'] ?? '',
     'aG9uZXlwb3Q' => '',
     
