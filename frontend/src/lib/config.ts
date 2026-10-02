@@ -3,8 +3,14 @@
  * Encapsulates environment variables and fallback URLs for DRY consistency.
  */
 
+// Host principal (ej. smartmaps360.ai) para derivar URLs por defecto
+const host = import.meta.env.HOST || '';
+
+export const SITE_URL = 
+  import.meta.env.SITE_URL || (host ? `https://${host}` : 'http://localhost:4321');
+
 export const PUBLIC_CMS_URL = 
-  import.meta.env.PUBLIC_CMS_URL || 'http://localhost:3000';
+  import.meta.env.PUBLIC_CMS_URL || (host ? `https://cms.${host}` : 'http://localhost:3000');
 
 export const CMS_INTERNAL_URL = 
   import.meta.env.CMS_INTERNAL_URL || PUBLIC_CMS_URL;

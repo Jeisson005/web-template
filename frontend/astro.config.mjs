@@ -6,7 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  site: process.env.SITE_URL || 'http://localhost:4321',
+  site: process.env.SITE_URL || (process.env.HOST ? `https://${process.env.HOST}` : 'http://localhost:4321'),
   integrations: [sitemap()],
   i18n: {
     defaultLocale: 'es',

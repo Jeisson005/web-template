@@ -1,15 +1,21 @@
 # ==============================================================================
 # Bitbucket Pipelines - CI/CD for GoDaddy Deployment
 # ==============================================================================
-# Variables requeridas en Bitbucket (Repository Settings -> Repository Variables):
-#   - GODADDY_HOST:          Host/IP del servidor (ej. ftp.midominio.com)
-#   - GODADDY_USER:          Usuario FTP / cPanel
-#   - GODADDY_PASSWORD:      Contraseña FTP / cPanel (Marcar como Secured)
-#   - GODADDY_FRONTEND_PATH: Ruta en el hosting para la web estática (ej. /public_html)
-#   - GODADDY_CMS_PATH:      (Opcional) Ruta de la app Node en cPanel (ej. /cms)
-#   - GODADDY_BACKEND_PATH:  (Fallback retrocompatible) Ruta de la app Node en cPanel
-#   - GITHUB_TOKEN:          Token de acceso personal de GitHub con permisos de repo (Secured)
-#   - GITHUB_REPO:           Repositorio en GitHub para GoDaddy (ej. Intelligis-Colombia/smartmaps-cms)
+# Configuración simplificada:
+#   Basta con definir en Bitbucket (Repository Settings -> Repository Variables):
+#     - HOST:                  Dominio principal del sitio (ej. smartmaps360.ai)
+#     - GODADDY_USER:          Usuario FTP / cPanel
+#     - GODADDY_PASSWORD:      Contraseña FTP / cPanel (Secured)
+#     - GITHUB_TOKEN:          Token de acceso personal de GitHub (Secured)
+#     - GITHUB_REPO:           (Opcional) Repositorio GitHub para GoDaddy (ej. Intelligis-Colombia/smartmaps-cms)
+#
+#   Variables con valores por defecto automáticos (puedes omitirlas):
+#     - GODADDY_HOST:          Toma el valor de $HOST por defecto
+#     - GODADDY_FRONTEND_PATH: Toma "/" (raíz) por defecto
+#     - GODADDY_SERVICES_PATH: Toma "${GODADDY_FRONTEND_PATH}/backend" por defecto
+#     - SITE_URL:              Toma "https://${HOST}" por defecto
+#     - PUBLIC_CMS_URL:        Toma "https://cms.${HOST}" por defecto
+#     - GODADDY_CMS_PATH:      Toma "/cms" por defecto
 # ==============================================================================
 
 image: node:22-alpine
@@ -27,6 +33,9 @@ pipelines:
           caches:
             - npm-frontend
           script:
+            - export HOST="${HOST:-$GODADDY_HOST}"
+            - export SITE_URL="${SITE_URL:-https://${HOST}}"
+            - export PUBLIC_CMS_URL="${PUBLIC_CMS_URL:-https://cms.${HOST}}"
             - cd frontend
             - npm ci
             - npm run build
@@ -42,10 +51,22 @@ pipelines:
               variables:
                 USER: $GODADDY_USER
                 PASSWORD: $GODADDY_PASSWORD
-                SERVER: $GODADDY_HOST
-                REMOTE_PATH: $GODADDY_FRONTEND_PATH
+                SERVER: ${GODADDY_HOST:-$HOST}
+                REMOTE_PATH: ${GODADDY_FRONTEND_PATH:-"/"}
                 LOCAL_PATH: 'frontend/dist'
                 DELETE_FLAG: 'true'
+                DEBUG: 'true'
+      - step:
+          name: Deploy Backend Services to GoDaddy
+          script:
+            - pipe: atlassian/ftp-deploy:0.7.0
+              variables:
+                USER: $GODADDY_USER
+                PASSWORD: $GODADDY_PASSWORD
+                SERVER: ${GODADDY_HOST:-$HOST}
+                REMOTE_PATH: ${GODADDY_SERVICES_PATH:-"${GODADDY_FRONTEND_PATH:-/}/backend"}
+                LOCAL_PATH: 'backend'
+                DELETE_FLAG: 'false'
                 DEBUG: 'true'
       - step:
           name: Sync CMS to GitHub (GoDaddy Node App)
@@ -66,6 +87,9 @@ pipelines:
           caches:
             - npm-frontend
           script:
+            - export HOST="${HOST:-$GODADDY_HOST}"
+            - export SITE_URL="${SITE_URL:-https://${HOST}}"
+            - export PUBLIC_CMS_URL="${PUBLIC_CMS_URL:-https://cms.${HOST}}"
             - cd frontend
             - npm ci
             - npm run build
@@ -80,10 +104,24 @@ pipelines:
               variables:
                 USER: $GODADDY_USER
                 PASSWORD: $GODADDY_PASSWORD
-                SERVER: $GODADDY_HOST
-                REMOTE_PATH: $GODADDY_FRONTEND_PATH
+                SERVER: ${GODADDY_HOST:-$HOST}
+                REMOTE_PATH: ${GODADDY_FRONTEND_PATH:-"/"}
                 LOCAL_PATH: 'frontend/dist'
                 DELETE_FLAG: 'true'
+                DEBUG: 'true'
+
+    deploy-backend:
+      - step:
+          name: Deploy Backend Services to GoDaddy
+          script:
+            - pipe: atlassian/ftp-deploy:0.7.0
+              variables:
+                USER: $GODADDY_USER
+                PASSWORD: $GODADDY_PASSWORD
+                SERVER: ${GODADDY_HOST:-$HOST}
+                REMOTE_PATH: ${GODADDY_SERVICES_PATH:-"${GODADDY_FRONTEND_PATH:-/}/backend"}
+                LOCAL_PATH: 'backend'
+                DELETE_FLAG: 'false'
                 DEBUG: 'true'
 
     deploy-cms:
@@ -108,8 +146,8 @@ pipelines:
               variables:
                 USER: $GODADDY_USER
                 PASSWORD: $GODADDY_PASSWORD
-                SERVER: $GODADDY_HOST
-                REMOTE_PATH: ${GODADDY_CMS_PATH:-$GODADDY_BACKEND_PATH}
+                SERVER: ${GODADDY_HOST:-$HOST}
+                REMOTE_PATH: ${GODADDY_CMS_PATH:-"${GODADDY_BACKEND_PATH:-/cms}"}
                 LOCAL_PATH: 'cms'
 
     sync-cms-github:
@@ -124,18 +162,3 @@ pipelines:
             - git add .
             - git commit -m "Sync cms from Bitbucket"
             - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO}.git main --force
-
-    deploy-backend:
-      - step:
-          name: Deploy Backend Services to GoDaddy
-          script:
-            - pipe: atlassian/ftp-deploy:0.7.0
-              variables:
-                USER: $GODADDY_USER
-                PASSWORD: $GODADDY_PASSWORD
-                SERVER: $GODADDY_HOST
-                REMOTE_PATH: ${GODADDY_SERVICES_PATH:-"${GODADDY_FRONTEND_PATH}/backend"}
-                LOCAL_PATH: 'backend'
-                DELETE_FLAG: 'false'
-                DEBUG: 'true'
-
