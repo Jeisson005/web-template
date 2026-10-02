@@ -1,4 +1,6 @@
 ---
+import { BACKEND_CONTACT_ENDPOINT } from '@/lib/config';
+
 interface Props {
   lang?: 'es' | 'en';
   title?: string;
@@ -86,7 +88,7 @@ const countries = [
       <div
         style="background: #FFFFFF; border-radius: 12px; padding: 32px; color: #0A1C4E; box-shadow: 0 20px 40px rgba(0,0,0,0.2);"
       >
-        <form class="smartmaps-contact-form" style="margin: 0;">
+        <form class="smartmaps-contact-form" data-endpoint={BACKEND_CONTACT_ENDPOINT} style="margin: 0;">
           <!-- Hidden Zoho CRM Web-to-Lead configuration fields -->
           <input type="hidden" name="xnQsjsdp" value="5e1bc7ca8ff29b70e99dfe39a3191e2c32fc63b7a6770ecc115c3534725ba304" />
           <input type="hidden" name="xmIwtLD" value="b7f63ea911aba54798fb9e0c91813db48ccbc8973c654850e0620eb9fa2b2c9cb5c8dc20c0d46a922b4b63e2b42aca77" />
@@ -288,7 +290,8 @@ const countries = [
           service: 'smarturl'
         };
 
-        const response = await fetch('/api/contact', {
+        const endpoint = (form as HTMLFormElement).dataset.endpoint || '/api/contact';
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),

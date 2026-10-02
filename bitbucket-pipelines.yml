@@ -124,3 +124,18 @@ pipelines:
             - git add .
             - git commit -m "Sync cms from Bitbucket"
             - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO:-Intelligis-Colombia/smartmaps-cms}.git main --force
+
+    deploy-backend:
+      - step:
+          name: Deploy Backend Services to GoDaddy
+          script:
+            - pipe: atlassian/ftp-deploy:0.7.0
+              variables:
+                USER: $GODADDY_USER
+                PASSWORD: $GODADDY_PASSWORD
+                SERVER: $GODADDY_HOST
+                REMOTE_PATH: ${GODADDY_SERVICES_PATH:-"${GODADDY_FRONTEND_PATH}/backend"}
+                LOCAL_PATH: 'backend'
+                DELETE_FLAG: 'false'
+                DEBUG: 'true'
+

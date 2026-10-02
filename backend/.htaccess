@@ -1,0 +1,27 @@
+# ----------------------------------------------------------------------
+# Backend Services Configuration (.htaccess)
+# Compatible con Apache / cPanel / Shared Hosting (GoDaddy)
+# ----------------------------------------------------------------------
+
+DirectoryIndex index.php index.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Enrutamiento de endpoints API
+  RewriteRule ^api/contact/?$ api/contact.php [L,QSA]
+  RewriteRule ^ssl_auto/renew/?$ ssl_auto/renew_ssl.php [L,QSA]
+</IfModule>
+
+# Proteger certificados y claves privadas generadas por el renovador SSL
+<IfModule mod_authz_core.c>
+  <FilesMatch "\.(key|pem|crt|env|log)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+  <FilesMatch "\.(key|pem|crt|env|log)$">
+    Order allow,deny
+    Deny from all
+  </FilesMatch>
+</IfModule>

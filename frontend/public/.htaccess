@@ -11,8 +11,9 @@ DirectoryIndex index.html
 
   # Permitir validación de Let's Encrypt / ACME challenge
   RewriteRule ^\.well-known/ - [L]
-  # Endpoint API Contacto Zoho (procesamiento PHP en hosting estático)
-  RewriteRule ^api/contact/?$ /api/contact.php [L,QSA]
+  # Enrutamiento opcional hacia el backend PHP si se despliega conjuntamente en cPanel
+  RewriteCond %{DOCUMENT_ROOT}/backend/api/contact.php -f
+  RewriteRule ^api/contact/?$ /backend/api/contact.php [L,QSA]
 
   # Manejo de rutas limpias para subdirectorios de Astro (ej. /contact -> /contact/index.html)
   RewriteCond %{REQUEST_FILENAME} !-f
