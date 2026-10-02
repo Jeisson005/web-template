@@ -11,9 +11,12 @@ DirectoryIndex index.html
 
   # Permitir validación de Let's Encrypt / ACME challenge
   RewriteRule ^\.well-known/ - [L]
-  # Enrutamiento opcional hacia el backend PHP si se despliega conjuntamente en cPanel
-  RewriteCond %{DOCUMENT_ROOT}/backend/api/contact.php -f
-  RewriteRule ^api/contact/?$ /backend/api/contact.php [L,QSA]
+  # Enrutamiento dinámico de cualquier subruta /api/ hacia el backend PHP (ej. /api/contact -> /backend/api/contact.php)
+  RewriteCond %{DOCUMENT_ROOT}/backend/api/$1.php -f
+  RewriteRule ^api/(.+?)/?$ /backend/api/$1.php [L,QSA]
+
+  RewriteCond %{DOCUMENT_ROOT}/backend/api/$1 -f
+  RewriteRule ^api/(.+)$ /backend/api/$1 [L,QSA]
 
   # Manejo de rutas limpias para subdirectorios de Astro (ej. /contact -> /contact/index.html)
   RewriteCond %{REQUEST_FILENAME} !-f
