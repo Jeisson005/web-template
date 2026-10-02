@@ -56,7 +56,7 @@ pipelines:
             - git config user.email "ci@bitbucket.org"
             - git add .
             - git commit -m "Sync backend from Bitbucket"
-            - git push https://x-access-token:$GITHUB_TOKEN@github.com/Intelligis-Colombia/smartmaps-cms.git main --force
+            - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO}.git main --force
 
   custom:
     deploy-frontend:
@@ -122,4 +122,4 @@ pipelines:
             - git config user.email "ci@bitbucket.org"
             - git add .
             - git commit -m "Sync backend from Bitbucket"
-            - git push https://x-access-token:$GITHUB_TOKEN@github.com/Intelligis-Colombia/smartmaps-cms.git main --force
+            - git push https://x-access-token:$GITHUB_TOKEN@github.com/${GITHUB_REPO}.git main --force
